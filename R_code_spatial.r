@@ -61,8 +61,29 @@ plot(country, cases, las=3, cex.axis=0.5)
 install.packages("ggplot2")
 
 library(ggplot2)  #require(ggplot2)
+     
+# load the previously saved .Rdata
 
+setwd("C:/lab/")   
 
+load("ggplot.RData")
+     
+ls()    # list of objects 
+
+library(ggplot2)
+
+data(mpg)
+head(mpg)
+     
+# key components: data, aes, geometry
+     
+ggplot(mpg, aes(x=displ,y=hwy)) + geom_point() # geomestry is declared as separate
+ggplot(mpg, aes(x=displ,y=hwy)) + geom_line()
+ggplot(mpg, aes(x=displ,y=hwy)) + geom_polygon()
+     
+head(covid)
+     
+ggplot(covid, aes(x=lon,y=lat, size=cases)) + geom_point()
 
 
 
