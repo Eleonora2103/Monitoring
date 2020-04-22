@@ -14,7 +14,7 @@ p224r63_2011 <- brick("p224r63_2011_masked.grd")
 
 plot(p224r63_2011)
 
-cl <- colorRampPalette(c('black','grey','light grey'))(100)
+cl <- colorRampPalette(c('black','grey','light grey'))(100)    # c= concatenate
 
 # bands of Landstat
 # B1: blue
