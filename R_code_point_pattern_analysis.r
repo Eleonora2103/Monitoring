@@ -36,6 +36,7 @@ coastline <- readOGR("ne_10m_coastline.shp")
 plot(coastlines, add=T)         # add:adding the lines to the previous image)
 
 # change of the colour, we are making ramp palette   c=array of colours   (100): all the possible colours from yellow to red
+# converting hand-designed `sequential' or `diverging' color schemes into continuous color ramps
 cl <- colorRampPalette(c("yellow","orange","red"))(100)
 plot(d, col=cl)
 points(covids)
