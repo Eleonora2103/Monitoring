@@ -59,9 +59,16 @@ plot(p224r63_2011$B3_sre, col=clr)
 cln <- colorRampPalette(c('red','orange','yellow'))(100) 
 plot(p224r63_2011$B4_sre, col=cln)
 
-#plotRGB
+# plotRGB 
+## RGB: to show an image using the visible part of the spectrum we can put every single band into the  
+## correspondent component of RGB spectrum. What we are doing is putting the exact bands into each  
+## components (of the Landsat band) to see the colours we might see with human eyes.
+
 # dev.off to close the previous part
-plotRGB(p224r63_2011, r=3, g=2, b= 1, stretch="Lin")         # stretch= stretching the colour to see it better (Lin: linear)
+
+plotRGB(p224r63_2011, r=3, g=2, b= 1, stretch="Lin")        
+# stretch= stretching the colour to see it better (Lin: linear) --> pass from a 
+# minimum 50 to a maximum of 100 to a minimum of 0 to a maximum of 100
 
 # highlight the vegetation (3 bend at time) respect to the other parts of the image
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin") 
@@ -72,10 +79,10 @@ plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
 # Exercise NIR on top of the B component of the RGB 
 plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin") 
 
-#############
+############# day 2: data from 1988
 setwd("C:/lab/")
 
-load("rs.RData")
+load("rs.RData")  # import the data done the previous day
 ls()
 
 p224r63_1988_masked.grd       # masked: no data where there is water
@@ -96,6 +103,9 @@ plotRGB(p224r63_1988, r=4, g=2, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin") 
 
 # enhance the noise
+# Mode1: stretch again the colour --> hist: we are going to shock the image with a huge amount of 
+# different colours immediately from the smallest to the greatest value
+# Mode2: multivariate analysis
 par(mfrow=c(2,1))
 plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="hist")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="hist") 
