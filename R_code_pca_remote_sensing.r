@@ -5,8 +5,9 @@ library(RStoolbox)
 
 setwd("C:/lab/")
 
-p224r63_2011 <- brick("p224r63_2011_masked.grd")
+p224r63_2011 <- brick("p224r63_2011_masked.grd")  # import the images composed by different layers
 
+## Landsat bands
 # b1 blue
 # b2 green
 # b3 red
@@ -21,14 +22,14 @@ plotRGB(p224r63_2011, r=5, g=4, b=3, stretch="Lin")
 
 # ggplotRGB
 library(ggplot2)
-ggRGB(p224r63_2011,5,4,3)
+ggRGB(p224r63_2011,5,4,3)  # showing the coordinates
 
 # do the same, with the 1988 image
 
 p224r63_1988 <- brick("p224r63_1988_masked.grd")
 plotRGB(p224r63_1988, r=5, g=4, b=3, stretch="Lin")
 
-par(mfrow=c(1,2))
+par(mfrow=c(1,2)) 
 plotRGB(p224r63_1988, r=5, g=4, b=3, stretch="Lin")
 plotRGB(p224r63_2011, r=5, g=4, b=3, stretch="Lin")
 
