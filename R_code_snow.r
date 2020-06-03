@@ -8,7 +8,7 @@ install.packages("ncdf4")
 library(raster)
 library(ncdf4)
 
-snowmay <- raster("c_gls_SCE_202005260000_NHEMI_VIIRS_V1.0.1.nc") # import image: snow from may
+snowmay <- raster("c_gls_SCE_202005260000_NHEMI_VIIRS_V1.0.1.nc") # import image: snow from May
 
 cl <- colorRampPalette(c('darkblue','blue','light blue'))(100) # colorRampPalette good for snow
 
@@ -48,5 +48,42 @@ plot(snow.multitemp, col=cl)
 # let's make a prediction
 source("prediction.r")
 
+########### day 2
+setwd("C:/lab/snow")
+
+library(raster)
+library(ncdf4)
+
+# Excercise: import all of the snow cover images altogether
+
+rlist <- list.files(pattern="snow")
+
+import <- lapply(rlist, raster)
+snow.multitemp <- stack(import)
+
+cl <- colorRampPalette(c('darkblue','blue','light blue'))(100) 
+plot(snow.multitemp, col=cl)
+
+# load("name.RData")
+prediction <- raster("predicted.2025.norm.tif")
+plot(prediction, col=cl)
+
+# Export the output
+# you made the calculation and you want to send the output to a collegue
+
+writeRaster(prediction, "final.tif")  # writing the entire raster object to a file
+
+# final stack
+final.stack <- stack(snow.multitemp, prediction)
+plot(final.stack, col=cl)
+
+# export the R graph
+pdf("my_final_exciting_graph") # create .pdf file
+plot(final.stack, col=cl)
+dev.off
+
+png("my_final_exciting_graph") # create .png file
+plot(final.stack, col=cl)
+dev.off
 
 
