@@ -8,10 +8,10 @@
 install.packages("rasterdiv")  # Diversity based Raster Data
 install.packages("rasterVis")  # Methods for enhanced visualization and interaction with raster data
 
-library(rasterVis)
+library(rasterVis) # to make levelplot
 library(rasterdiv)
 
-data(copNDVI)
+data(copNDVI) # cop: COpernicus
 plot(copNDVI)
 
 copNDVI <- reclassify(copNDVI, cbind(253:255, NA))  # removing water-based colours
