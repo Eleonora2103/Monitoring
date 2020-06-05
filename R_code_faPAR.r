@@ -1,10 +1,11 @@
-# R code faPAR
-# how to look 
+# R_code_faPAR.r
+# how to look at chemical cycling from sateliites
 
+# levelplot(copNDVI)
 
 library(raster)
-library(rasterVis)
-library(rasterdiv)
+library(rasterVis) # used to make levelplot
+library(rasterdiv) 
 
 plot(copNDVI)
 copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
