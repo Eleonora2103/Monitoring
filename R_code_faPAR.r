@@ -7,17 +7,16 @@ library(raster)
 library(rasterVis) # used to make levelplot
 library(rasterdiv) 
 
-plot(copNDVI)
-copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
+plot(copNDVI) # Copernicus NDVI, present in the rasterdiv library
+copNDVI <- reclassify(copNDVI, cbind(253:255, NA)) # remove data from 253 to 255 and put no data as value --> remove water from the analysis
 levelplot(copNDVI)
 
 setwd("C:/lab/")
 
-faPAR10 <- raster("faPAR10.tif")
-
+faPAR10 <- raster("faPAR10.tif") # import the image; faPAR10 because it is aggregate by a fact=10
 levelplot(faPAR10)
 
-pdf("copNDVI.pdf")
+pdf("copNDVI.pdf") # make a pdf file; quotes because we are saving the file outside R
 levelplot(copNDVI)
 dev.off()
 
