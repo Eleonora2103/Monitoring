@@ -67,7 +67,7 @@ copNDVI <- reclassify(copNDVI, cbind(253:255, NA), right=TRUE)
 # make random sample
 library(sf) # to call st_* functions
 
-random.points <- function(x,n)
+random.points <- function(x,n) # x = raster file; n = number of point that we want select
 {
 lin <- rasterToContour(is.na(x))
 pol <- as(st_union(st_polygonize(st_as_sf(lin))), 'Spatial') # st_union to dissolve geometries
@@ -76,12 +76,15 @@ pts <- spsample(pol[1,], n, type = 'random')
 
 pts <- random.points(faPAR10,1000)
 
-copNDVIp <- extract(copNDVI, pts)
-faPAR10p <- extract(faPAR10,pts)
+# make the extraction of the faPAR and copNDVI from a raster; pass values from a maps 
+copNDVIp <- extract(copNDVI, pts) # copNDVI points = 1000 points where we put the data
+faPAR10p <- extract(faPAR10,pts) # faPAR points
 
-# photosynthesis vs. biomass
-model2 <- lm(faPAR10p ~ copNDVIp)
+# photosynthesis(y) vs. biomass(x)
+model2 <- lm(faPAR10p ~ copNDVIp) # lm = to fit linear models
 summary(model2)
+## R-squared: 0.4279 → the point are not perfectly in line but they are far from being random, they are related to each other
+## p-value: < 2.2e-16 --> the relation is confirmed
 plot(copNDVIp, faPAR10p, col="green", xlab="biomass", ylab="photosynthesis")
 abline(model2, col="red")
 
