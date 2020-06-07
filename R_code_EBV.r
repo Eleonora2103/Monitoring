@@ -12,6 +12,7 @@ snt #see the characteristics of the image
 
 #plot the image
 plot(snt)
+## complex system: passing from bare soil, to forest, opening parts related to agriculture, and forest.
 
 #B1 = blue
 #B2 = green
@@ -19,37 +20,44 @@ plot(snt)
 #B4 = NIR
 
 # R3 G2 B1
-plotRGB(snt, 3, 2, 1, stretch="Lin")
-plotRGB(snt, 4, 3, 2, stretch="Lin")
+plotRGB(snt, 3, 2, 1, stretch="Lin") # visible colours
+plotRGB(snt, 4, 3, 2, stretch="Lin") # NIR in top of red: vegetation being coloured in red
 
-pairs(snt)
+pairs(snt) # to see if the axis are related to each other
 
+# The analysis to start from multi system and moving to only one layer is the multivariate analysis
 library(RSToolbox)
 #PCA anlysis
 sntPCA <- rasterPCA(snt)
 sntPCA
 
-summary(sntPCA$model) # info about output of the model
+# $: linking the model to the analysis we have done (PCA)
+summary(sntPCA$model) # info about output of the model 
 # 70% of the info (component 1)
-plot(sntPCA$map)
+plot(sntPCA$map) # PC1 has the highest amount of information
 
-#plot RGB
+#plot RGB of the first three component
 plotRGB(sntPCA$map, 1, 2, 3, stretch="Lin")
 
-###calculate standard deviation
-#set the moving window
-window <- matrix(1, nrow = 5, ncol = 5)
+### calculate standard deviation on top of PCA
+## set the moving window
+## matrix of 5x5 rows and columns with value=1 -> stat that there are 5 
+## by 5 pixels moving throughout the image (the value 1 not impact the analysis)
+window <- matrix(1, nrow = 5, ncol = 5) 
+window # see the 5 by 5 window
 
-#focal --> calculates values for a neighbourhood of cells
-sd_nst <- focal(sntPCA$map$PC1, w = window, fun =sd)   #we use tha map and the frst principal component; w = window; fun = function = mean, mode, max, min, sd (standar deviation)
+# focal (raster function) --> calculates values for a neighbourhood of cells to calculate sd
+sd_nst <- focal(sntPCA$map$PC1, w = window, fun =sd)   
+## we are going to make the analysis on top of the map and we use only the first principal component; 
+## w = window (moving window); fun = function = mean, mode, max, min, sd (standard deviation)
 
 cl <- colorRampPalette(c('dark blue','green','orange','red'))(100) 
-plot(sd_snt, col=cl)
+plot(sd_snt, col=cl) # plot the final result of measuring diversity from space
 
-par(mfrow=c(1,2))
-plotRGB(snt,4,3,2, stretch="lin")
-plot(sd_snt, col=cl)
-
+# comparison between the original map and the diversity map
+par(mfrow=c(1,2))  # two images beside to the other
+plotRGB(snt,4,3,2, stretch="lin", main = "Original Image")
+plot(sd_snt, col=cl, main = "Diversity")
 
 ####### day 2: cladonia example
 # R_code_cladonia_focal.rFile
@@ -88,14 +96,8 @@ cl <- colorRampPalette(c('yellow','violet','black'))(100)
 plot(sd_clad, col=cl)
 plot(sd_clad_agg, col=cl)
 
-
-par(mfrow=c(1,2))
+par(mfrow=c(1,2)) # two images beside to the other
 cl <- colorRampPalette(c('yellow','violet','black'))(100) #
 plotRGB(clad, 1,2,3, stretch="lin")
 plot(sd_clad, col=cl)
 # plot(sd_clad_agg, col=cl)
-
-
-
-
- 
