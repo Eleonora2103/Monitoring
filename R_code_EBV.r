@@ -5,8 +5,10 @@ setwd("C:/lab/")
 library(raster) #to see the image
 
 #raster <- # imports a single layer, yet satellite images are made of more than one layer
+# satellites images (Sentinel) are composed by many layers
 snt <- brick("snt_r10.tif") #also named the picture
 snt #see the characteristics of the image
+# 30 bits image
 
 #plot the image
 plot(snt)
