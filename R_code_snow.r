@@ -86,4 +86,23 @@ png("my_final_exciting_graph") # create .png file
 plot(final.stack, col=cl)
 dev.off
 
+##############
+setwd("C:/lab/")
+
+# install.packages("ncdf4")
+install.packages("ncdf4") 
+library(ncdf4)
+library(raster)
+
+snow <- raster("c_gls_SCE_202005260000_NHEMI_VIIRS_V1.0.1.nc") # import image
+
+cl <- colorRampPalette(c('darkblue','blue','light blue'))(100)
+
+ext <- c(0, 20, 35, 50)
+zoom(snow, ext=ext)
+
+snowitaly <- crop(snow, ext)
+plot(snowitaly, col=cl)
+
+zoom(snow, ext=drawExtent())
 
