@@ -27,7 +27,7 @@ pairs(snt) # to see if the axis are related to each other
 
 # The analysis to start from multi system and moving to only one layer is the multivariate analysis
 library(RSToolbox)
-#PCA anlysis
+#PCA anlysis (coming out from the multivariate analysis)
 sntPCA <- rasterPCA(snt)
 sntPCA
 
@@ -59,44 +59,51 @@ par(mfrow=c(1,2))  # two images beside to the other
 plotRGB(snt,4,3,2, stretch="lin", main = "Original Image")
 plot(sd_snt, col=cl, main = "Diversity")
 
-####### day 2: cladonia example
+####### day 2: Cladonia example
 # R_code_cladonia_focal.rFile
 
 setwd("C:/lab/")
 library(raster)
 
 # import the images: two functions --> raster (one single band); brick (import several layer at time)
+# in this case we have directly RGB image (made of three layers) so we made use of the brick function
 clad <- brick("cladonia_stellaris_calaita.JPG")
 
-plotRGB(clad, 1, 2, 3, stretch="lin")
+plotRGB(clad, 1, 2, 3, stretch="lin") # RGB bands: red, green, blue
 
-window <- matrix(1, nrow = 3, ncol = 3) # window in which we make the calculation
+# we make the focal function on top of the image to see where there is the major variability
+# set the moving window 
+window <- matrix(1, nrow = 3, ncol = 3) # window in which we make the calculation (3x3 pixels); 
+# 1: set a value for the pixels which is not impacting further calculation
 window
 
-pairs(clad)
-
-library(RStoolbox)
+pairs(clad) # to see if the bands are related to each other
 
 ### PCA analysis
-cladpca <- rasterPCA(clad)
-cladpca
+library(RStoolbox)
 
-summary(cladpca$model)
-# 98% of the info (component 1)
+cladpca <- rasterPCA(clad)
+cladpca # information about pca
+
+summary(cladpca$model) #let's see how much information is explaining the PC1
+# 98% of the info (component 1):  this is common since it is an image taken into the visible spectrum 
+# (in the visible the bands are really correlated to each other)
 plotRGB(cladpca$map, 1, 2, 3, stretch="lin")
 
+# focal (raster function) --> calculates values for a neighbourhood of cells to calculate sd
 sd_clad <- focal(cladpca$map$PC1, w=window, fun=sd) # do the calculation of the diversity into a certain band of the image
 
 PC1_agg <- aggregate(cladpca$map$PC1, fact=10) # accelerate the calculation of sd
-sd_clad_agg <- focal(PC1_agg, w=window, fun=sd)
+sd_clad_agg <- focal(PC1_agg, w=window, fun=sd) # make the focal function on top of the pc1 agrregated
 
 # plot the two different set we made
-par(mfrow=c(1,2))
+par(mfrow=c(1,2)) # two images beside to the other in multiframe
 cl <- colorRampPalette(c('yellow','violet','black'))(100) 
 plot(sd_clad, col=cl)
-plot(sd_clad_agg, col=cl)
+plot(sd_clad_agg, col=cl) # cladonia set aggregated
 
-par(mfrow=c(1,2)) # two images beside to the other
+# plot the calculation
+par(mfrow=c(1,2)) 
 cl <- colorRampPalette(c('yellow','violet','black'))(100) #
 plotRGB(clad, 1,2,3, stretch="lin")
 plot(sd_clad, col=cl)
