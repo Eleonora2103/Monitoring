@@ -5,14 +5,16 @@
 # 3. R code spatial
 # 4. R code point pattern
 # 5. R code for multivariate analysis
-# 6. R code_rs.r
+# 6. R code_rs
 # 7. R code_ecosystem functions
-# 8. R code_pca_remote_sensing.r
-# 9. R code_faPAR.r
-# 10. R code_radiance.r
-# 11. R code_EBV.r
-# 12. Rcode_snow.r
-# 13. R code_no2.r
+# 8. R code_pca_remote_sensing
+# 9. R code_faPAR
+# 10. R code_radiance
+# 11. R code_EBV
+# 12. Rcode_snow
+# 13. R code_no2
+# 14. R code_interpolation
+# 15. R code_sdm
 
 # 1. R_code_first
 
@@ -1013,3 +1015,137 @@ abline(0,1, col="red")
 
 plot(snow.multitemp$snow2000r, snow.multitemp$snow2020r)
 abline(0,1,col="red")
+
+######################################
+######################################
+######################################
+
+# 15. R_code_interpolation.r
+
+## Beach forest - Casentino
+
+setwd("C:/lab/")
+ 
+library(spatstat) # Spatial Point Pattern Analysis
+ 
+# import data - since it is only a table, we will use the read.table function
+inp <- read.table("dati_plot55_LAST3.csv", sep=";", head=T) 
+head(imp) # to see the first 6 rows of the dataset
+
+attach(inp)
+# plot(inp$X, inp$Y)
+plot(X,Y)
+
+summary(inp)
+inppp <- ppp(x=X, y=Y, c(716000,718000),c(4859000,4861000)) # Planar Point Pattern
+
+names(inp)
+marks(inppp) <- Canopy.cov # label the sigle point
+
+# estimate the canopy cover
+canopy <- Smooth(inppp) # interpolate the data (smooth) of the inppp set where they have not been measured
+# Warning: adapt the cross validation: chacking the new values with the original one
+plot(canopy)
+points(inppp, col="green")
+
+marks(inppp) <- cop.lich.mean
+lichs <- Smooth(inppp)
+plot(lichs)
+points(inppp)
+
+# plot the variables together
+## output <- stack(canopy,lichs)
+## plot(lichs) # don't work due to a lenght difference
+par(mfrow=c(1,2))
+plot(canopy)
+points(inppp)
+plot(lichs)
+points(inppp)
+
+# final plot of the two variables
+par(mfrow=c(1,3))
+plot(canopy)
+points(inppp)
+plot(lichs)
+points(inppp)
+plot(Canopy.cov, cop.lich.mean, col="red", pch=19, cex=2)
+
+dev.off()
+
+############ Psammophilus forest
+inp.psam <- read.table("dati_psammofile.csv", sep=";", head=T) 
+attach(inp.psam)
+
+head(inp.psam)
+plot(E, N)
+
+summaru(inp.psam)
+inp.psam.ppp <- ppp(x=E,y=N,c(356450,372240),c(5059800,5064150))
+
+marks(inp.psam.ppp) <- C_org
+
+C <- Smooth(inp.psam.ppp)
+ 
+plot(E,N)
+
+C <- Smooth(inp.psam.ppp)
+plot(C)
+points(inp.psam.ppp)
+
+####################################
+####################################
+####################################
+
+# 15. R_code_sdm.r 
+
+install.packages("sdm") # Species Distribution Modelling
+
+library(sdm) 
+library(raster) # predictors; make use of the raster set
+library(rgdal)# species; manage coordinates and spactial data
+
+# import the file
+file <- system.file("external/species.shp", package="sdm") 
+## external: there are species data and environmental variables data (inside the sdm package)
+
+# use the graphical part of the file
+species <- shapefile(file) 
+plot(species) # present/absent plot
+species # information about species
+
+plot(species[species$Occurrence == 1,],col='blue',pch=16)
+
+path <- system.file("external", package="sdm")
+
+lst <- list.files(path=path,pattern='asc$',full.names = T) #
+lst
+
+preds <- stack(lst)
+plot(preds)
+
+cl <- colorRampPalette(c('blue','orange','red','yellow')) (100) # change the colorRampPalette
+plot(preds, col=cl)
+
+plot(preds$elevation, col=cl)
+points(species[species$Occurrence == 1,], pch=16)
+
+plot(preds$temperature, col=cl)
+points(species[species$Occurrence == 1,], pch=16)
+
+plot(preds$precipitation, col=cl)
+points(species[species$Occurrence == 1,], pch=16)
+
+plot(preds$vegetation, col=cl)
+points(species[species$Occurrence == 1,], pch=16)
+
+# model
+d <- sdmData(train=species, predictors=preds) # explain which are the data
+
+m1 <- sdm(Occurrence ~ elevation + precipitation + temperature + vegetation, data=d, methods = "glm")
+p1 <- predict(m1, newdata=preds)
+
+plot(p1, col=cl)
+points(species[species$Occurrence == 1,], pch=16)
+ 
+s1 <- stack(preds, p1)
+plot(s1, col=cl)
