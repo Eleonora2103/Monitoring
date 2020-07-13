@@ -18,19 +18,33 @@
 
 # 1. R_code_first
 
-install.packages("sp")
+# Download and install the packages 
+# sp package = to show the points in a map
+install.packages("sp") 
 
+# attach an add-on package
 library(sp)
 
+# load specific dataset
 data(meuse)
 
+meuse # let's see how the meuse data set is structured 
+
+# see the first six lines of the whole data set
 head(meuse)
 
+# the database is attached in R
 attach(meuse)
 
+# plot the database
+# Let's plot two variables together to see if they are related
+# See if zinc concentration is related to that of copper
 plot(zinc,copper)
-plot(zinc,copper,col="red")
+# col = specify the colours of the point
+plot(zinc,copper,col="red") # quotes are used for each object that is outside of R 
+# pch = used to specify point shapes
 plot(zinc,copper,col="red",pch=19)
+# cex = used to make character exageration
 plot(zinc,copper,col="red",pch=19,cex=2)
 
 ##############################################
@@ -43,32 +57,39 @@ plot(zinc,copper,col="red",pch=19,cex=2)
 
 install.packages("sp")
 install.packages("GGally")
+# GGally is an extension of ggplot2; it adds functions to reduce the complexity of combining geometric objects with transformed data
 
 library(sp)
 library(GGally)
 
 data(meuse)
-
 attach(meuse)
 
+# names = function to get the name of all variables in the dataset
+names(meuse)
 head(meuse)
 
 plot(cadmium,zinc)
 
 plot(cadmium,zinc,pch=15)
 
-plot(cadmium,zinc,pch=15,col="red")
+plot(cadmium,zinc,pch=15,col="red",cex=2)
+# pch = used to specify point shapes
+# col = specify the colours of the point
+# cex = used to make character exageration
 
 pairs(meuse)
+# create a matrix of scatterplot
+
+# error = "the sizze is too large" --> reshape with the mouse the graph window and relaunch the code
 
 pairs(~cadmium+copper+lead+zinc,data=meuse)
+# create scatterplots using only Cadmium, Copper, Lead, and Zinc
 
 pairs(meuse[,3:6])
-
+# from coloumn 3 to 6
 pairs(meuse[,3:6],pch=19)
-
 pairs(meuse[,3:6],pch=19,col="green")
-
 pairs(meuse[,3:6],pch=19,col="green",cex=2)
 
 # GGally package will prettify the graph
@@ -85,22 +106,25 @@ ggpairs(meuse[,3:6])
 library(sp)  # you want to use that packages
 
 data(meuse)
-
 head(meuse)
 
 # coordinates
 coordinates(meuse) = ~x+y
 
+# function to plot the dataset
 plot(meuse)
 
-spplot(meuse, "zinc")   
+# spplot = plots several layers with a single legend for all maps
+spplot(meuse, "zinc") # plot the spatial amount of zinc
 
-# Plot the spatial amount of copper and change thetitle
+# Plot the spatial amount of copper
 
 spplot(meuse, "copper")
 
 spplot(meuse, "copper", main = "Copper concentration")
+# main = change the title
 
+# bubble = creates a bubble plot of spatial data
 bubble(meuse, "zinc")
 
 bubble(meuse, "zinc", main = "Zinc COncentration")
@@ -109,20 +133,23 @@ bubble(meuse, "zinc", main = "Zinc COncentration")
 
 bubble(meuse, "copper", main = "Copper concentration", col = "red")
 
-#### Impotring new data
+#### Importing new data
 
 # download covid agg.csv from out teaching site and build a folder called lab into C:
-#put the covid_agg.csv file into the folder lab
+# put the covid_agg.csv file into the folder lab
 
 # setting the working directory: lab
 
-setwd("C:/lab/")             # set WorkingDirectly
+setwd("C:/lab/") # set Working Directory, for Windows
 
-covid <- read.table("covid_agg.csv", head=T)       # arrows link a function to an object
+covid <- read.table("covid_agg.csv", head=T) # the arrow (<-) links a function to an object
+# reads a file in table format and creates a data frame from it
+# head = T/TRUE --> the first line is the header of the table
 
-head(covid)
+head(covid) # let's see the first six line of the table
 
 attach(covid)
+# let's plot the table
 plot(country,cases)
 
 plot(country, cases, las=0)  # parallel label
@@ -133,24 +160,26 @@ plot(country, cases, las=2)  # label perpendicular
 
 plot(country, cases, las=3)  # vertical labels
 
+# cex.axis = changes the size of the axis annotation
 plot(country, cases, las=3, cex.axis=0.5)
 
 plot(country, cases, las=3, cex.axis=0.7
 
 plot(country, cases, las=3, cex.axis=0.5)
 
-# ggplot2 package
+# ggplot2 package to create graphics
 install.packages("ggplot2")
 
-library(ggplot2)  #require(ggplot2)
+library(ggplot2)  # require(ggplot2)
      
 # load the previously saved .Rdata
 
 setwd("C:/lab/")   
 
 load("ggplot.RData")
-     
-ls()    # list of objects 
+
+# ls = shows what data sets and functions we defined and used in the recalled workingspace
+ls() # list of objects 
 
 library(ggplot2)
 
@@ -158,14 +187,18 @@ data(mpg)
 head(mpg)
      
 # key components: data, aes, geometry
-     
-ggplot(mpg, aes(x=displ,y=hwy)) + geom_point() # geomestry is declared as separate
+# aes = declare the variables
+# geometry = declare the geomentry of the plot; they are declared as separate
+ggplot(mpg, aes(x=displ,y=hwy)) + geom_point() 
 ggplot(mpg, aes(x=displ,y=hwy)) + geom_line()
 ggplot(mpg, aes(x=displ,y=hwy)) + geom_polygon()
      
 head(covid)
      
-ggplot(covid, aes(x=lon,y=lat, size=cases)) + geom_point()
+ggplot(covid, aes(x=lon,y=lat, size=cases)) + geom_point() 
+# get the size of each element from objects, in this case x
+# the size of the points change according to the case
+     
 ############################################
 ############################################
 ############################################
@@ -178,19 +211,21 @@ install.packages("spatstat")
 
 library(spatstat)
 
+# attach the Covid dataset
 attach(covid)
 head(covid)
 
-covids <- ppp(lot, lan, c(-180,180), c(-90,90))     # panel point pattern
+covids <- ppp(lot, lan, c(-180,180), c(-90,90)) # panel point pattern
 
+# d: density map
 d <- density(covids)
 
+# plot and show the points within the density map
 plot(d)
-points(covids)
+points(covids) 
 
 setwd("C:/lab/")
 load("point_pattern.RData")
-
 ls()
 
 # covids: point pattern
@@ -205,12 +240,14 @@ install.packages("rgdal")
 library(rgdal)
 
 # let's input vector ines (x0y0, x1y1, x2y2..)
-coastline <- readOGR("ne_10m_coastline.shp")
+coastline <- readOGR("ne_10m_coastline.shp") 
 
-plot(coastlines, add=T)         # add:adding the lines to the previous image)
+plot(coastlines, add=T) # add: add the lines to the previous image
 
-# change of the colour, we are making ramp palette   c=array of colours   (100): all the possible colours from yellow to red
-# converting hand-designed `sequential' or `diverging' color schemes into continuous color ramps
+# change of the colour, we are making ramp palette   
+# c=array of colours   
+# (100): all the possible colours from yellow to red
+# colorRampPalette: converting hand-designed `sequential' or `diverging' color schemes into continuous color ramps
 cl <- colorRampPalette(c("yellow","orange","red"))(100)
 plot(d, col=cl)
 points(covids)
@@ -240,16 +277,16 @@ dev.off()
 
 setwd("C:/lab/")
 
-# vegan = vegetation analysis
+# vegan = VEGetation ANalysis
 
 library(vegan)
 
 biomes <- read.table("biomes.csv", header=T, sep=",")   # csv is an extension
 
-head(biomes)
+head(biomes) # have a look to the data base
 
+# Multivariate Analysis
 # DEtrended CORrespondence ANAlysis 
-
 multivar <- decorana(biomes)
 plot(multivar)
 multivar
@@ -257,16 +294,20 @@ multivar
 plot(multivar)
 
 # biomes types
+# assign name to a function (<-) + read.table to import from outside (name) + header = true bc first line is header + separator is the comma, so we state it
 biomes_types <- read.table("biomes_types.csv", header=T, sep=",") 
 
 head(biomes_types)
 
 attach(biomes_types)
-ordiellipse(multivar, type, col=1:4, kind="ehull", lwd=3)            # ellipse connecting all the plots of same biomes
+ordiellipse(multivar, type, col=1:4, kind="ehull", lwd=3) # ordiellipse: ellipse connecting all the plots of same biomes
+# col: specify the colours of the point
+# kind: type of grouping
+# lwd: dimension of the line of the ellipse
 
 # also col=c("green","blue","red","black")
 
-ordispider(multivar, type, col=1:4, label=T)
+ordispider(multivar, type, col=1:4, label=T) # draw a 'spider' diagram where each point is connected to the central group with segment
 
 ######################################
 ######################################
