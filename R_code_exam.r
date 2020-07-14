@@ -27,6 +27,7 @@ library(sp)
 
 # load specific dataset
 data(meuse)
+# meuse: dataset comprising of four heavy metals (Copper, Zinc, Cadmium, Lead) measures in the top soil along the river Meuse
 
 meuse # let's see how the meuse data set is structured 
 
@@ -65,7 +66,7 @@ library(GGally)
 data(meuse)
 attach(meuse)
 
-# names = function to get the name of all variables in the dataset
+# names: function to get the name of all variables in the dataset
 names(meuse)
 head(meuse)
 
@@ -78,8 +79,8 @@ plot(cadmium,zinc,pch=15,col="red",cex=2)
 # col = specify the colours of the point
 # cex = used to make character exageration
 
-pairs(meuse)
 # create a matrix of scatterplot
+pairs(meuse)
 
 # error = "the sizze is too large" --> reshape with the mouse the graph window and relaunch the code
 
@@ -118,7 +119,6 @@ plot(meuse)
 spplot(meuse, "zinc") # plot the spatial amount of zinc
 
 # Plot the spatial amount of copper
-
 spplot(meuse, "copper")
 
 spplot(meuse, "copper", main = "Copper concentration")
@@ -142,8 +142,9 @@ bubble(meuse, "copper", main = "Copper concentration", col = "red")
 
 setwd("C:/lab/") # set Working Directory, for Windows
 
-covid <- read.table("covid_agg.csv", head=T) # the arrow (<-) links a function to an object
-# reads a file in table format and creates a data frame from it
+covid <- read.table("covid_agg.csv", head=T) 
+# the arrow (<-) links a function to an object
+# read.table: reads a file in table format and creates a data frame from it
 # head = T/TRUE --> the first line is the header of the table
 
 head(covid) # let's see the first six line of the table
@@ -184,20 +185,21 @@ ls() # list of objects
 library(ggplot2)
 
 data(mpg)
+# mpg: provides fuel economy data from 1999 to 2008 for 38 popular model of cars
 head(mpg)
      
+ggplot(mpg, aes(x=displ,y=hwy)) + geom_point() # point geometry 
+ggplot(mpg, aes(x=displ,y=hwy)) + geom_line() # line geometry
+ggplot(mpg, aes(x=displ,y=hwy)) + geom_polygon() # polygon geometry
 # key components: data, aes, geometry
-# aes = declare the variables
-# geometry = declare the geomentry of the plot; they are declared as separate
-ggplot(mpg, aes(x=displ,y=hwy)) + geom_point() 
-ggplot(mpg, aes(x=displ,y=hwy)) + geom_line()
-ggplot(mpg, aes(x=displ,y=hwy)) + geom_polygon()
-     
+# aes: declare the variables we want to plot
+# geometry: declare the geomentry of the plot; they are declared as separate
+
 head(covid)
      
 ggplot(covid, aes(x=lon,y=lat, size=cases)) + geom_point() 
 # get the size of each element from objects, in this case x
-# the size of the points change according to the case
+# the size of the points change according to the cases
      
 ############################################
 ############################################
@@ -208,16 +210,18 @@ ggplot(covid, aes(x=lon,y=lat, size=cases)) + geom_point()
 ## point pattern analysis: density map
 
 install.packages("spatstat")
-
+# Spatial Point Pattern Analysis: statystical analysis of spatial point pattern
+     
 library(spatstat)
 
 # attach the Covid dataset
 attach(covid)
 head(covid)
 
-covids <- ppp(lot, lan, c(-180,180), c(-90,90)) # panel point pattern
-
-# d: density map
+covids <- ppp(lot, lan, c(-180,180), c(-90,90)) # planar point pattern, specify the variables and the range
+# lot, lan: explain the x and y variables and their range
+     
+# density map
 d <- density(covids)
 
 # plot and show the points within the density map
@@ -235,7 +239,7 @@ library(spatstat)
 plot(d)
 points(covids)
 
-install.packages("rgdal")
+install.packages("rgdal") # rgdal: provides bindings to the 'Geospatial' Data Abstraction Library
 
 library(rgdal)
 
@@ -244,11 +248,12 @@ coastline <- readOGR("ne_10m_coastline.shp")
 
 plot(coastlines, add=T) # add: add the lines to the previous image
 
-# change of the colour, we are making ramp palette   
-# c=array of colours   
-# (100): all the possible colours from yellow to red
-# colorRampPalette: converting hand-designed `sequential' or `diverging' color schemes into continuous color ramps
+
 cl <- colorRampPalette(c("yellow","orange","red"))(100)
+# colorRampPalette: converting hand-designed `sequential' or `diverging' color schemes into continuous color ramps
+# change of the colour, we are making ramp palette   
+# c: array of colours   
+# (100): all the possible colours from yellow to red
 plot(d, col=cl)
 points(covids)
 plot(coastlines, add=T)
@@ -265,6 +270,7 @@ clr <- colorRampPalette(c("light green","yellow","orange","violet"))(100)
 plot(d, col=clr, main="densitites of covid-19")
 points(covids)
 plot(coastlines, add=T)
+# shut down the device
 dev.off()
      
 ##############################################
@@ -278,11 +284,10 @@ dev.off()
 setwd("C:/lab/")
 
 # vegan = VEGetation ANalysis
-
 library(vegan)
 
 biomes <- read.table("biomes.csv", header=T, sep=",")   # csv is an extension
-
+# sep="," -> separator between the names of the words within the rows
 head(biomes) # have a look to the data base
 
 # Multivariate Analysis
@@ -294,13 +299,14 @@ multivar
 plot(multivar)
 
 # biomes types
-# assign name to a function (<-) + read.table to import from outside (name) + header = true bc first line is header + separator is the comma, so we state it
 biomes_types <- read.table("biomes_types.csv", header=T, sep=",") 
+# assign name to a function (<-) + read.table to import from outside (name) + header = true bc first line is header + separator is the comma, so we state it
 
 head(biomes_types)
 
 attach(biomes_types)
-ordiellipse(multivar, type, col=1:4, kind="ehull", lwd=3) # ordiellipse: ellipse connecting all the plots of same biomes
+ordiellipse(multivar, type, col=1:4, kind="ehull", lwd=3) 
+# ordiellipse: ellipse connecting all the plots of same biomes
 # col: specify the colours of the point
 # kind: type of grouping
 # lwd: dimension of the line of the ellipse
@@ -317,37 +323,37 @@ ordispider(multivar, type, col=1:4, label=T) # draw a 'spider' diagram where eac
      
 ## R code for remote sensing data analysis
 
-#raster
 install.packages("raster")
+# raster:  raster is the format with the pixels so matrices of the row, columns and values
 install.packages("RStoolbox")
+# RStoolbox: package for remote sensing image, processing and analysis such as calculating spectral indeces, principal component transformation
 
 setwd("C:/lab/")
 
-#raster <- # imports a single layer, yet satellite images are made of more than one layer
-library(raster)
-
 # import images
+library(raster)
+#raster:  imports a single layer, yet satellite images are made of more than one layer
 
-p224r63_2011 <- brick("p224r63_2011_masked.grd") # brick: import images with several layer at time
+p224r63_2011 <- brick("p224r63_2011_masked.grd") 
+# brick: import images with several layer at time
 
 plot(p224r63_2011)
 
-cl <- colorRampPalette(c('black','grey','light grey'))(100)    # c= concatenate
+cl <- colorRampPalette(c('black','grey','light grey'))(100) # c: concatenate
 
 # bands of Landstat
 # B1: blue
 # B2: green
 # B3: red
-# B4:NIR
-
-# multiframe of different plots       
-# c= series of characters
+# B4: NIR
 
 par(mfrow=c(2,2))
-
+# multiframe of different plots       
+# c= series of characters
+     
 # B1: blue
 clb <- cl <- colorRampPalette(c('dark blue','blue','light blue'))(100)
-plot(p224r63_2011$B1_sre, col=clb)    # $= link different part (band to imagine)
+plot(p224r63_2011$B1_sre, col=clb) # $= link different part (band to image)
 
 # B2: green 
 clg <- colorRampPalette(c('dark green','green','light green'))(100) 
@@ -365,7 +371,7 @@ plot(p224r63_2011$B4_sre, col=cln)
 par(mfrow=c(4,1))
 
 clb <- cl <- colorRampPalette(c('dark blue','blue','light blue'))(100)
-plot(p224r63_2011$B1_sre, col=clb)    # $= link different part (band to imagine)
+plot(p224r63_2011$B1_sre, col=clb) # $= link different part (band to imagine)
 
 clg <- colorRampPalette(c('dark green','green','light green'))(100) 
 plot(p224r63_2011$B2_sre, col=clg)
@@ -375,18 +381,20 @@ plot(p224r63_2011$B3_sre, col=clr)
 
 cln <- colorRampPalette(c('red','orange','yellow'))(100) 
 plot(p224r63_2011$B4_sre, col=cln)
-
-# plotRGB 
-## RGB: to show an image using the visible part of the spectrum we can put every single band into the  
+dev.off()
+     
+## plotRGB 
+## RGB: to show an image using the visible part of the spectrum; we can put every single band into the  
 ## correspondent component of RGB spectrum. What we are doing is putting the exact bands into each  
 ## components (of the Landsat band) to see the colours we might see with human eyes.
 
 # dev.off to close the previous part
 
 plotRGB(p224r63_2011, r=3, g=2, b= 1, stretch="Lin")        
-# stretch= stretching the colour to see it better (Lin: linear) --> pass from a 
+# stretch: stretching the colour to see it better (Lin: linear) --> pass from a 
 # minimum 50 to a maximum of 100 to a minimum of 0 to a maximum of 100
 
+# NIR on top of the R component of the RGB
 # highlight the vegetation (3 bend at time) respect to the other parts of the image
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin") 
 
@@ -402,7 +410,7 @@ setwd("C:/lab/")
 load("rs.RData")  # import the data done the previous day
 ls()
 
-p224r63_1988_masked.grd       # masked: no data where there is water
+p224r63_1988_masked.grd # masked: no data where there is water
 
 library(raster)
 p224r63_1988 <- brick("p224r63_1988_masked.grd")
@@ -416,7 +424,7 @@ plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
 
 # Plot in false colour RGB 432 both images
 par(mfrow=c(2,1))
-plotRGB(p224r63_1988, r=4, g=2, b=2, stretch="Lin")
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin") 
 
 # enhance the noise
@@ -431,8 +439,10 @@ plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="hist")
 # B1: blue
 # B2: green
 # B3: red: B3_sre
-# B4:NIR: B4_sre
-
+# B4: NIR: B4_sre
+     
+# we are going to calculate the DVI
+# DVI 2011
 dvi2011 <- p224r63_2011$B4_sre - p224r63_2011$B3_sre
 cl <- colorRampPalette(c('darkorchid3','light blue','lightpink4'))(100)
 plot(dvi2011, col=cl)
@@ -447,10 +457,10 @@ diff <- dvi2011 - dvi1988
 plot(diff)
 
 # Let's change the grain (dimension of pixel) of our images  # res: resempling
-
-p224r63_2011res <- aggregate(p224r63_2011, fact=10)   # fact: amount of time we want to increase our images (10 time the image)
+p224r63_2011res <- aggregate(p224r63_2011, fact=10)   
 p224r63_2011res100 <- aggregate(p224r63_2011, fact=100)
-
+# fact: amount of time we want to increase our images (10 time the image)
+     
 par(mfrow=c(3,1))
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011res, r=4, g=3, b=2, stretch="Lin")
@@ -467,22 +477,22 @@ plotRGB(p224r63_2011res100, r=4, g=3, b=2, stretch="Lin")
 ## chemical cycling
 ## proxies
 
-install.packages("rasterdiv")  # Diversity based Raster Data
-install.packages("rasterVis")  # Methods for enhanced visualization and interaction with raster data
+install.packages("rasterdiv")  # diversity based Raster Data
+install.packages("rasterVis")  # methods for enhanced visualization and interaction with raster data
 
 library(rasterVis) # to make levelplot
 library(rasterdiv)
 
-data(copNDVI) # cop: COpernicus
+data(copNDVI) # cop: COpernicus NDVI
 plot(copNDVI)
 
-copNDVI <- reclassify(copNDVI, cbind(253:255, NA))  # removing water-based colours
+copNDVI <- reclassify(copNDVI, cbind(253:255, NA)) # removing water-based colours
+# reclassify: function that reclassify groups of values to other values
 
 levelplot(copNDVI) # Draw Level Plots and Contour plots
 
-copNDVI10 <- aggregate(copNDVI, fact=10)
+copNDVI10 <- aggregate(copNDVI, fact=10) # fact: aggregating 10 pixel in 1 
 levelplot(copNDVI10)
-
 
 copNDVI100 <- aggregate(copNDVI, fact=100)
 levelplot(copNDVI100)
@@ -493,7 +503,6 @@ library(ggplot2)
 myPalette <- colorRampPalette(c('white','green','dark green'))
 sc <- scale_colour_gradientn(colours = myPalette(100), limits=c(1, 8))
 
-
 ggR(copNDVI, geom_raster = TRUE) +
 scale_fill_gradientn(name = "NDVI", colours = myPalette(100))+
 labs(x="Longitude",y="Latitude", fill="")+
@@ -502,11 +511,13 @@ labs(x="Longitude",y="Latitude", fill="")+
 # +
 # ggtitle("NDVI")
 
+##########################
 
+# DVI deforestation
 setwd("C:/lab/")
 library(raster)
 
-defor1 <- brick("defor1_.jpg")  # function to import images several layers
+defor1 <- brick("defor1_.jpg")  # function to import images with several layers
 defor2 <- brick("defor2_.jpg")
 
 # band1: NIR, defor1_.1, defor2_.1
@@ -521,6 +532,7 @@ par(mfrow=c(1,2))
 plotRGB(defor1, r=1, g=2, b=3, stretch="Lin")
 plotRGB(defor2, r=1, g=2, b=3, stretch="Lin")
 
+# calculation of DVI
 dvi1 <- defor1$defor1_.1 - defor1$defor1_.2
 dvi2 <- defor2$defor2_.1 - defor2$defor2_.2
 
@@ -529,12 +541,14 @@ par(mfrow=c(1,2))
 plot(dvi1, col=cl)
 plot(dvi2, col=cl)
 
+# Let's see the difference between dvi1 and dvi2
 difdvi <- dvi1 - dvi2
 
-dev.off()   # different with difference extents
+dev.off()   
 cld <- colorRampPalette(c('blue','white','red'))(100) 
 plot(difdvi, col=cld)
 
+# make an histogram
 hist(difdvi)
      
 #######################################
@@ -560,12 +574,13 @@ p224r63_2011 <- brick("p224r63_2011_masked.grd")  # import the images composed b
 # b7 SWIR
 # b8 panchromatic
 
+# image from 2011
 # RGB   
 plotRGB(p224r63_2011, r=5, g=4, b=3, stretch="Lin")
 
 # ggplotRGB
 library(ggplot2)
-ggRGB(p224r63_2011,5,4,3)  # showing the coordinates
+ggRGB(p224r63_2011,5,4,3)  # show the coordinates
 
 # do the same, with the 1988 image
 
@@ -578,24 +593,24 @@ plotRGB(p224r63_2011, r=5, g=4, b=3, stretch="Lin")
 
 # let's see the correlation between band 1 and band 3
 names(p224r63_2011) # names: to see the names of the variables
-# "B1_sre" "B2_sre" "B3_sre" "B4_sre" "B5_sre" "B6_bt"  "B7_sre"
-# sre: spectrum reflectance; bt: bit transfer -> different kind of reflectance methods
+# "B1_sre" "B2_sre" "B3_sre" "B4_sre" "B5_sre" "B6_bt" "B7_sre"
+# sre: spectrum reflectance; bt: bit transfer (different kind of reflectance methods)
 
 # see how much the bands are correlated each other
 plot(p224r63_2011$B1_sre, p224r63_2011$B3_sre) # $: link two variables
 
-
-# PCA
+# PCA: Principal Component Analysis
 # decrease the resolution: we have huge amount of pixels
 p224r63_2011_res <- aggregate(p224r63_2011, fact=10)
 
 # library(RStoolbox) is now needed (to make PCA)
 p224r63_2011_pca <- rasterPCA(p224r63_2011_res) 
+# rasterPCA: function to make the PCA
 
 cl <- colorRampPalette(c('dark grey','grey','light grey'))(100) # let's plot the $map
 plot(p224r63_2011_pca$map, col=cl)
 
- # how much variation is explained by each component
+# $model: how much variation is explained by each component
 summary(p224r63_2011_pca$model) # summary: to see the information clearly
 # PC1 99.83% of the whole variation
 
@@ -603,7 +618,7 @@ pairs(p224r63_2011) # let’s see how the different bands are correlated to each
 
 plotRGB(p224r63_2011_pca$map, r=1, g=2, b=3, stretc="Lin")) # 1=PC1; 2=PC2; 3=PC3 
 
-# Repeat fot he 1988 image
+# Repeat for the 1988 image
 p224r63_1988_res <- aggregate(p224r63_1988, fact=10)
 p224r63_1988_pca <- rasterPCA(p224r63_1988_res) 
 plot(p224r63_1988_pca$map, col=cl)
@@ -641,6 +656,7 @@ levelplot(copNDVI)
 
 setwd("C:/lab/")
 
+# faPAR: we can see the real power of the forest in keeping carbon
 faPAR10 <- raster("faPAR10.tif") # import the image; faPAR10 because it is aggregate by a fact=10
 levelplot(faPAR10)
 
@@ -652,6 +668,8 @@ pdf("faPAR.pdf")
 levelplot(faPAR10)
 dev.off()
 
+##############################
+setwd("C:/lab/")
 load("faPAR.RData")
 
 # the original faPAR from Copernicus is 2GB
@@ -661,7 +679,7 @@ load("faPAR.RData")
 library(raster)
 library(rasterdiv)
 
-writeRaster(copNDVI, "copNDVI.tif")
+writeRaster(copNDVI, "copNDVI.tif") # write an entire Raster object to a file
 # 5.3MB
 
 library(rasterVis)
@@ -676,9 +694,12 @@ hm <- c(30, 100, 150, 200, 260, 340, 460, 600)
 
 plot(erosion, hm, col="red", pch=19, xlab="erosion", ylab="heavy metals")
 
+# fit linear models
 model1 <- lm(hm ~ erosion)
 summary(model1)
-abline(model1)
+# pvalue: how many times is a random situation
+# p < 0.01 -> lower probability (1/100) that is random so the variables are related
+abline(model1) # line described by 'a' and 'b'
 
 ### faPAR vs. NDVI model
 setwd("C:/lab/")
@@ -709,7 +730,7 @@ copNDVIp <- extract(copNDVI, pts) # copNDVI points = 1000 points where we put th
 faPAR10p <- extract(faPAR10,pts) # faPAR points
 
 # photosynthesis(y) vs. biomass(x)
-model2 <- lm(faPAR10p ~ copNDVIp) # lm = to fit linear models
+model2 <- lm(faPAR10p ~ copNDVIp) # lm: to fit linear models
 summary(model2)
 ## R-squared: 0.4279 → the point are not perfectly in line but they are far from being random, they are related to each other
 ## p-value: < 2.2e-16 --> the relation is confirmed
@@ -720,13 +741,14 @@ abline(model2, col="red")
 #####################################
 #####################################
 
-# 1. R_code_radiance.r
+# 10. R_code_radiance.r
 
 ## bit example
 library(raster)  # format where there are pixels
 
+# let's create a raster with two rows and two coloumns
 toy <- raster(ncol=2, nrow=2, xmn=1, xmx=2, ymn=1, ymx=2)
-values(toy) <- c(1.13, 1.44, 1.55, 3.4) # put data into iìeach pixel
+values(toy) <- c(1.13, 1.44, 1.55, 3.4) # put data into each pixel
 
 plot(toy)
 text(toy, digits=2) # add the values of toy, using 2 decimal degrees
@@ -776,24 +798,25 @@ plot(copNDVI) # see the range of data (bits) of copNDVI
 
 # 11. R_code_EBV.r
 
+# EBVs: Essential Biodiversity Variables
+
 ## upload image
 setwd("C:/lab/") 
 library(raster) #to see the image
 
-#raster <- # imports a single layer, yet satellite images are made of more than one layer
 # satellites images (Sentinel) are composed by many layers
 snt <- brick("snt_r10.tif") #also named the picture
-snt #see the characteristics of the image
+snt # see the characteristics of the image
 # 30 bits image
 
-#plot the image
+# plot the image
 plot(snt)
-## complex system: passing from bare soil, to forest, opening parts related to agriculture, and forest.
+## complex system: passing from bare soil, to forest, opening parts related to agriculture, and forest
 
-#B1 = blue
-#B2 = green
-#B3 = red
-#B4 = NIR
+# B1 = blue
+# B2 = green
+# B3 = red
+# B4 = NIR
 
 # R3 G2 B1
 plotRGB(snt, 3, 2, 1, stretch="Lin") # visible colours
@@ -806,6 +829,8 @@ library(RSToolbox)
 #PCA anlysis (coming out from the multivariate analysis)
 sntPCA <- rasterPCA(snt)
 sntPCA
+
+--------------------------------------------------------
 
 # $: linking the model to the analysis we have done (PCA)
 summary(sntPCA$model) # info about output of the model 
