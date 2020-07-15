@@ -1094,7 +1094,7 @@ abline(0,1,col="red")
 ######################################
 ######################################
 
-# 15. R_code_interpolation.r
+# 14. R_code_interpolation.r
 
 ## Beach forest - Casentino
 
@@ -1197,6 +1197,7 @@ path <- system.file("external", package="sdm")
 lst <- list.files(path=path,pattern='asc$',full.names = T) # ASII file: an extension
 lst
 
+# make a stack of the data
 preds <- stack(lst)
 plot(preds)
 
@@ -1215,7 +1216,7 @@ points(species[species$Occurrence == 1,], pch=16)
 plot(preds$vegetation, col=cl)
 points(species[species$Occurrence == 1,], pch=16)
 
-# model
+# make the model
 d <- sdmData(train=species, predictors=preds) # explain which are the data
 
 m1 <- sdm(Occurrence ~ elevation + precipitation + temperature + vegetation, data=d, methods = "glm") # generalised linear model: several predictors altogether
