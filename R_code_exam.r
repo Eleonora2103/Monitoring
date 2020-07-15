@@ -830,8 +830,6 @@ library(RSToolbox)
 sntPCA <- rasterPCA(snt)
 sntPCA
 
---------------------------------------------------------
-
 # $: linking the model to the analysis we have done (PCA)
 summary(sntPCA$model) # info about output of the model 
 # 70% of the info (component 1)
@@ -840,17 +838,17 @@ plot(sntPCA$map) # PC1 has the highest amount of information
 #plot RGB of the first three component
 plotRGB(sntPCA$map, 1, 2, 3, stretch="Lin")
 
-### calculate standard deviation on top of PCA
+## calculate standard deviation on top of PCA
 ## set the moving window
-## matrix of 5x5 rows and columns with value=1 -> stat that there are 5 
-## by 5 pixels moving throughout the image (the value 1 not impact the analysis)
+## matrix of 5x5 rows and columns with value: 1 --> state that there are 
+## 5 by 5 pixels moving throughout the image (the value 1 not impact the analysis)
 window <- matrix(1, nrow = 5, ncol = 5) 
 window # see the 5 by 5 window
 
 # focal (raster function) --> calculates values for a neighbourhood of cells to calculate sd
 sd_nst <- focal(sntPCA$map$PC1, w = window, fun =sd)   
-## we are going to make the analysis on top of the map and we use only the first principal component; 
-## w = window (moving window); fun = function = mean, mode, max, min, sd (standard deviation)
+# w = window (moving window); fun = 'function' = mean, mode, max, min, sd (standard deviation)
+# we are going to make the analysis on top of the map and we use only the first principal component; 
 
 cl <- colorRampPalette(c('dark blue','green','orange','red'))(100) 
 plot(sd_snt, col=cl) # plot the final result of measuring diversity from space
@@ -895,7 +893,7 @@ plotRGB(cladpca$map, 1, 2, 3, stretch="lin")
 sd_clad <- focal(cladpca$map$PC1, w=window, fun=sd) # do the calculation of the diversity into a certain band of the image
 
 PC1_agg <- aggregate(cladpca$map$PC1, fact=10) # accelerate the calculation of sd
-sd_clad_agg <- focal(PC1_agg, w=window, fun=sd) # make the focal function on top of the pc1 agrregated
+sd_clad_agg <- focal(PC1_agg, w=window, fun=sd) # make the focal function on top of the pc1 aggregated
 
 # plot the two different set we made
 par(mfrow=c(1,2)) # two images beside to the other in multiframe
@@ -907,8 +905,10 @@ plot(sd_clad_agg, col=cl) # cladonia set aggregated
 par(mfrow=c(1,2)) 
 cl <- colorRampPalette(c('yellow','violet','black'))(100) #
 plotRGB(clad, 1,2,3, stretch="lin")
-plot(sd_clad, col=cl)
+
 # plot(sd_clad_agg, col=cl)
+plot(sd_clad, col=cl)
+
 
 ##########################################
 ##########################################
@@ -920,6 +920,7 @@ setwd("C:/lab/")
 
 # install.packages("ncdf4")
 install.packages("ncdf4") 
+# ncdf4 package to read all the netCDF files. All Copernicus data use this extension
 
 library(raster)
 library(ncdf4)
@@ -950,19 +951,20 @@ plot(snow2020, col=cl)
 #############
 
 # fast version of import and plot of many data for lazy people!
-# lapply: apply the function over a list or vector; we want to apply the function raster (used to import single layer)
 
-rlist <- list.files(pattern="snow") # make the list of all the files with common pattern
+rlist <- list.files(pattern="snow") # make the list of all the files with common pattern (snow)
 rlist
 
+# lapply: apply the function over a list or vector; we want to apply the function raster (used to import single layer)
 import <- lapply(rlist, raster) # import all the files
 
-snow.multitemp <- stack(import) # stack: put alltogether different layer (snow layers)
+snow.multitemp <- stack(import) # stack: put altogether different layer (snow layers)
 snow.multitemp
 plot(snow.multitemp, col=cl)
 
 # let's make a prediction
 source("prediction.r")
+# causes R to accept its input from the named file or URL or connection or expressions directly
 
 ########### day 2
 setwd("C:/lab/snow")
@@ -1003,6 +1005,7 @@ plot(final.stack, col=cl)
 dev.off
 
 ##############
+# Crop an image
 setwd("C:/lab/")
 
 # install.packages("ncdf4")
@@ -1016,19 +1019,23 @@ cl <- colorRampPalette(c('darkblue','blue','light blue'))(100)
 
 ext <- c(0, 20, 35, 50)
 zoom(snow, ext=ext)
+# zoom the image
 
 snowitaly <- crop(snow, ext)
+# crop: allows to create a new image (the zoom made previously)
 plot(snowitaly, col=cl)
 
-zoom(snow, ext=drawExtent())
-
+## you can also use drawExtent to create a new image
+# zoom(snow, ext=drawExtent())
+# snowitaly <- crop(snow, drawExtent())
+ 
 ########################################
 ########################################
 ########################################
 
 # 13. R_code_no2.r
 
- setwd("C:/lab/no2/")
+setwd("C:/lab/no2/")
 
 library(raster)
 
@@ -1047,7 +1054,7 @@ plot(EN$EN_0001, col=cl)
 plot(EN$EN_0013, col=cl)
 
 #RGB space
-plotRGB(EN, r=1, g=7, b=13, stretch="lin")
+plotRGB(EN, r=1, g=7, b=13, stretch="lin") # each colour is associated with the number of the image in the stack
 
 # difference map
 dif <- EN$EN_0013 - EN$EN_0001
@@ -1056,12 +1063,13 @@ plot(dif, col=cld)
 
 # quantitative estimate: do the box-plot
 boxplot(EN)
-boxplot(EN, outline=F, horizontal=T)
-boxplot(EN,outline=F, horizontal=T, axes=T)
+boxplot(EN, outline=F, horizontal=T) # remove the outline; move the box-plot horizontally
+boxplot(EN, outline=F, horizontal=T, axes=T) # add an axes to make the box-plot easier to read
 
 # plot!
 plot(EN$EN_0001, EN$EN_0013)
 abline(0,1,col="red") # y=a+bx
+# if there is a decrease in NO2,diff values should lay below the y=x line
 
 setwd("C:/lab/snow/")
 # import the snow cover imeages altogether
@@ -1096,13 +1104,13 @@ library(spatstat) # Spatial Point Pattern Analysis
  
 # import data - since it is only a table, we will use the read.table function
 inp <- read.table("dati_plot55_LAST3.csv", sep=";", head=T) 
-head(imp) # to see the first 6 rows of the dataset
+head(inp) # to see the first 6 rows of the dataset
 
 attach(inp)
-# plot(inp$X, inp$Y)
+# plot(inp$X, inp$Y) if we did not attach the set
 plot(X,Y)
 
-summary(inp)
+summary(inp) # to know the minum and maxiumum value of x and y
 inppp <- ppp(x=X, y=Y, c(716000,718000),c(4859000,4861000)) # Planar Point Pattern
 
 names(inp)
@@ -1112,7 +1120,7 @@ marks(inppp) <- Canopy.cov # label the sigle point
 canopy <- Smooth(inppp) # interpolate the data (smooth) of the inppp set where they have not been measured
 # Warning: adapt the cross validation: chacking the new values with the original one
 plot(canopy)
-points(inppp, col="green")
+points(inppp, col="green") # add the point to the map
 
 marks(inppp) <- cop.lich.mean
 lichs <- Smooth(inppp)
@@ -1145,7 +1153,7 @@ attach(inp.psam)
 head(inp.psam)
 plot(E, N)
 
-summaru(inp.psam)
+summary(inp.psam)
 inp.psam.ppp <- ppp(x=E,y=N,c(356450,372240),c(5059800,5064150))
 
 marks(inp.psam.ppp) <- C_org
@@ -1164,26 +1172,29 @@ points(inp.psam.ppp)
 
 # 15. R_code_sdm.r 
 
+# Species Distribution Modelling
+
 install.packages("sdm") # Species Distribution Modelling
 
 library(sdm) 
 library(raster) # predictors; make use of the raster set
 library(rgdal)# species; manage coordinates and spactial data
 
-# import the file
+# import the file (presence/absence file)
 file <- system.file("external/species.shp", package="sdm") 
 ## external: there are species data and environmental variables data (inside the sdm package)
 
 # use the graphical part of the file
 species <- shapefile(file) 
-plot(species) # present/absent plot
+plot(species) # presence/absence plot
 species # information about species
 
+# plot the occurance species
 plot(species[species$Occurrence == 1,],col='blue',pch=16)
 
 path <- system.file("external", package="sdm")
 
-lst <- list.files(path=path,pattern='asc$',full.names = T) #
+lst <- list.files(path=path,pattern='asc$',full.names = T) # ASII file: an extension
 lst
 
 preds <- stack(lst)
@@ -1207,11 +1218,12 @@ points(species[species$Occurrence == 1,], pch=16)
 # model
 d <- sdmData(train=species, predictors=preds) # explain which are the data
 
-m1 <- sdm(Occurrence ~ elevation + precipitation + temperature + vegetation, data=d, methods = "glm")
+m1 <- sdm(Occurrence ~ elevation + precipitation + temperature + vegetation, data=d, methods = "glm") # generalised linear model: several predictors altogether
 p1 <- predict(m1, newdata=preds)
 
 plot(p1, col=cl)
 points(species[species$Occurrence == 1,], pch=16)
  
+# we can make the final stack with all the predictors and variables
 s1 <- stack(preds, p1)
 plot(s1, col=cl)
