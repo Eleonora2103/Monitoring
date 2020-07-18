@@ -825,7 +825,7 @@ plotRGB(snt, 4, 3, 2, stretch="Lin") # NIR in top of red: vegetation being colou
 pairs(snt) # to see if the axis are related to each other
 
 # The analysis to start from multi system and moving to only one layer is the multivariate analysis
-library(RSToolbox)
+library(RStoolbox)
 #PCA anlysis (coming out from the multivariate analysis)
 sntPCA <- rasterPCA(snt)
 sntPCA
@@ -1279,7 +1279,7 @@ par(mfrow=c(1,2))
 plot(EN$EN_0001, col=cl)
 plot(EN$EN_0013, col=cl)
 
-#RGB space
+# RGB space
 # B2 = blue
 # B3 = green
 # B4 = red
@@ -1320,23 +1320,45 @@ plotRGB(July, 4,3,2, scale= "20000", stretch = "lin", axes =TRUE, main = "09.07.
 box(col = "white")
 
 # NDVI calculation: NIR - RED / NIR + RED
-ndviMay <- (May$T32TPN_20200523T100559_B08 - May$T32TPN_20200523T100559_B04)/(May$T32TPN_20200523T100559_B08 + May$T32TPN_20200523T100559_B04)
-ndviMay <- (May$T32TPN_20200523T100559_B08 - May$T32TPN_20200523T100559_B04)
-/ (May$T32TPN_20200523T100559_B08 + May$T32TPN_20200523T100559_B04)
-ndviJune <- (June$T32TPN_20200622T100559_B8A_20m - June$T32TPN_20200622T100559_B04_20m)
-/ (June$T32TPN_20200622T100559_B8A_20m + June$T32TPN_20200622T100559_B04_20m)
-ndviJuly <- (July$T32TPN_20200707T101031_B8A_20m - July$T32TPN_20200707T101031_B04_20m)
-/ (July$T32TPN_20200707T101031_B8A_20m + July$T32TPN_20200707T101031_B04_20m
+
+# Names of the bands
+names(May)
+names(June)
+names(July)
+
+# NDVI
+ndviMay <- (May$T32TPN_20200523T100559_B08 - May$T32TPN_20200523T100559_B04) / (May$T32TPN_20200523T100559_B08 + May$T32TPN_20200523T100559_B04)
+ndviJune <- (June$T32TPN_20200622T100559_B8A_20m - June$T32TPN_20200622T100559_B04_20m) / (June$T32TPN_20200622T100559_B8A_20m + June$T32TPN_20200622T100559_B04_20m)
+ndviJuly <- (July$T32TPN_20200707T101031_B8A_20m - July$T32TPN_20200707T101031_B04_20m) / (July$T32TPN_20200707T101031_B8A_20m + July$T32TPN_20200707T101031_B04_20m)
 
 # Plot NDVI
-   
-clNDVI = colorRampPalette(c("blue", "white", "red"))()
-par(mfrow=c(2,3))
-plot(ndvi02, col = clNDVI, main = "27/02/2020")
-plot(ndvi03, col = clNDVI, main = "18/03/2020")
-plot(ndvi04a, col = clNDVI, main = "07/04/2020")
-plot(ndvi04b, col = clNDVI, main = "25/04/2020")
-plot(ndvi04c, col = clNDVI, main = "25/04/2020")
-plot(ndvi05, col = clNDVI, main = "30/04/2020")
+clNDVI = colorRampPalette(c("black","blue","yellow"))(200)
+par(mfrow=c(1,3))
+plot(ndviMay, col = clNDVI, main = "23.05.2020")
+plot(ndviJune, col = clNDVI, main = "22.06.2020")
+plot(ndviJuly, col = clNDVI, main = "09.07.2020")
+clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
+darkblue','yellow','red','black
+
+# Difference NDVI between June and July
+diffNDVI <- ndviJuly - ndviMay
+plot(difNDVI, col=clNDVI, main = "Difference NDVI")
+
+# Zoom on Parco dell'Uccellina
+plotRGB(July, r=3, g=2, b=1, stretch="lin")
+cl=colorRampPalette(c("Brown","yellow","darkgreen"))(200)
+plot(July, col=cl)
+ext <- c(4700000, 4740000, 650000, 700000)
+zoom(July, ext=ext)
+
+
+
+ext <- c(4700000, 4740000, 650000, 680000)
+zoom(July, ext=ext)
+
+ext <- c(470, 474, 65, 68)
+# zoom the image
+
+cl <- colorRampPalette(c('darkblue','blue','light blue'))(100)
             
             
