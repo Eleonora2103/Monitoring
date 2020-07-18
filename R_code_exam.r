@@ -1228,3 +1228,69 @@ points(species[species$Occurrence == 1,], pch=16)
 # we can make the final stack with all the predictors and variables
 s1 <- stack(preds, p1)
 plot(s1, col=cl)
+
+#########################################
+#########################################
+#########################################
+
+# R_code_final_project.r
+
+# Maremma
+
+library(raster)
+
+setwd("C:/lab/maremmaMay/")
+# Images from May, 2020
+# import the files through the lapply function
+rlist <- list.files(pattern="T32TPN")
+rlist
+
+import <- lapply(rlist, raster)
+May <- stack(import)
+cl <- colorRampPalette(c('red','orange','yellow'))(100) 
+plot(May, col=cl)
+
+
+setwd("C:/lab/maremmaJune/")
+# Images from June, 2020
+rlist <- list.files(pattern="20200622")
+rlist
+
+import <- lapply(rlist, raster)
+June <- stack(import)
+cl <- colorRampPalette(c('red','orange','yellow'))(100) 
+plot(June, col=cl)
+
+setwd("C:/lab/maremmaJuly/")
+# Images from July, 2020
+rlist <- list.files(pattern="20200712")
+rlist
+
+import <- lapply(rlist, raster)
+July <- stack(import)
+cl <- colorRampPalette(c('red','orange','yellow'))(100) 
+plot(July, col=cl)
+
+# january and march
+par(mfrow=c(1,2))
+plot(EN$EN_0001, col=cl)
+plot(EN$EN_0013, col=cl)
+
+#RGB space
+# B2 = blue
+# B3 = green
+# B4 = red
+# B8 = NIR
+# B11 = SWIR
+
+# Plot in the visible
+# May
+plotRGB(May, r=3, g=2, b=1, stretch="lin") 
+
+# June
+plotRGB(June, r=3, g=2, b=1, stretch="lin")
+
+# July
+plotRGB(July, r=3, g=2, b=1, stretch="lin")
+
+
