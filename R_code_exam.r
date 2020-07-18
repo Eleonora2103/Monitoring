@@ -1263,24 +1263,21 @@ import2 <- lapply(rlist, raster)
 July <- stack(import2)
 plot(July)
 
-rlist <- list.files(pattern="20200707")
-rlist
-import6 <- lapply(rlist, raster)
-July <- stack(import6)
-plot(July)
-
-
-# january and march
-par(mfrow=c(1,2))
-plot(EN$EN_0001, col=cl)
-plot(EN$EN_0013, col=cl)
-
-# RGB space
+# Sentinel-2 bands
+# b1 = Coastal Aerosol
 # B2 = blue
 # B3 = green
 # B4 = red
+# B5 = Vegetation Red Edge
+# B6 = Vegetation Red Edge
+# B7 = Vegetation Red Edge
 # B8 = NIR
+# B9 = Water Vapour
+# B10 = SWIR-Cirrus
 # B11 = SWIR
+# B12 = SWIR
+
+# RGB space
 
 # Plot in the visible
 # May
@@ -1293,18 +1290,16 @@ plotRGB(June, r=3, g=2, b=1, stretch="lin")
 plotRGB(July, r=3, g=2, b=1, stretch="lin")
 
 par(mfrow=c(1,3))
-# adjust the parameters so the axes colors are white. Also turn off tick marks.
+# adjust the parameters so the axes colors are white
 par(col.axis = "white", col.lab = "white")
 # plot
 plotRGB(May,3,2,1,scale= "20000", stretch = "lin", axes = TRUE, main = "23.05.2020")
 # set bounding box to white as well
 box(col = "white")
-
 plotRGB(June,3,2,1,scale= "20000", stretch = "lin", axes =TRUE, main = "22.06.2020")
 box(col = "white")
 plotRGB(July,3,2,1,scale= "20000", stretch = "lin", axes =TRUE, main = "07.07.2020")
 box(col = "white")
-
 
 # NIR on top of the red component
 par(mfrow=c(1,3))
@@ -1328,18 +1323,19 @@ ndviJune <- (June$T32TPN_20200622T100559_B8A_20m - June$T32TPN_20200622T100559_B
 ndviJuly <- (July$T32TPN_20200707T101031_B8A_20m - July$T32TPN_20200707T101031_B04_20m) / (July$T32TPN_20200707T101031_B8A_20m + July$T32TPN_20200707T101031_B04_20m)
 
 # Plot NDVI
-clNDVI = colorRampPalette(c("black","blue","yellow"))(200)
+clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
 par(mfrow=c(1,3))
 plot(ndviMay, col = clNDVI, main = "23.05.2020")
 plot(ndviJune, col = clNDVI, main = "22.06.2020")
 plot(ndviJuly, col = clNDVI, main = "07.07.2020")
-clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
 
 # Difference NDVI between June and July
-diffNDVI <- ndviJuly - ndviMay
-plot(difNDVI, col=clNDVI, main = "Difference NDVI")
+diffNDVI <- ndviJuly - ndviJune
+plot(diffNDVI, col=clNDVI, main = "Difference NDVI")
 
 # Zoom on Parco dell'Uccellina
+
+# Posso fare dirrettamete così perchè tutte le mie bande hanno una risoluzione di 10m
 
 May2020 <- stack(import)
 ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
@@ -1366,5 +1362,15 @@ plotRGB(Parcojuly, r=3, g=2, b=1, stretch="lin")
 ndvi_park_may <- (Parcomay$T32TPN_20200523T100559_B08 - Parcomay$T32TPN_20200523T100559_B04) / (Parcomay$T32TPN_20200523T100559_B08 + Parcomay$T32TPN_20200523T100559_B04)
 ndvi_park_june <- (Parcojune$T32TPN_20200622T100559_B8A_20m - Parcojune$T32TPN_20200622T100559_B04_20m) / (Parcojune$T32TPN_20200622T100559_B8A_20m + Parcojune$T32TPN_20200622T100559_B04_20m)
 ndvi_park_july <- (Parcojuly$T32TPN_20200707T101031_B8A_20m - Parcojuly$T32TPN_20200707T101031_B04_20m) / (Parcojuly$T32TPN_20200707T101031_B8A_20m + Parcojuly$T32TPN_20200707T101031_B04_20m)
-            
-            
+  
+setwd("C:/lab/May8/")
+band8 <- stack(import)
+rlist <- list.files(pattern="20200523")
+rlist
+import <- lapply(rlist, raster)
+T32TPN_20200523T100559_B08 <- resample(T32TPN_20200523T100559_B08,T32TPN_20200523T100559_B8A)
+
+band8 <- brick("T32TPN_20200523T100559_B08")
+band8A <- raster("T32TPN_20200523T100559_B8A")
+
+
