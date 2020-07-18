@@ -1238,41 +1238,37 @@ plot(s1, col=cl)
 # Maremma
 
 library(raster)
+setwd("C:/lab/maremma/")
 
-setwd("C:/lab/maremmaMay/")
-# Images from May, 2020
 # import the files through the lapply function
-rlist <- list.files(pattern="T32TPN")
-rlist
 
+# Images from May, 2020
+rlist <- list.files(pattern="20200523")
+rlist
 import <- lapply(rlist, raster)
 May <- stack(import)
-cl <- colorRampPalette(c('red','orange','yellow'))(100) 
-plot(May, col=cl)
-
-
-setwd("C:/lab/maremmaJune/")
+plot(May)
 
 # Images from June, 2020
 rlist <- list.files(pattern="20200622")
 rlist
+import1 <- lapply(rlist, raster)
+June <- stack(import1)
+plot(June)
 
-import <- lapply(rlist, raster)
-June <- stack(import)
-cl <- colorRampPalette(c('red','orange','yellow'))(100) 
-plot(June, col=cl)
-
-# Image from July
-
-setwd("C:/lab/maremmaJuly/")
-# Images from July, 2020
+# Image from July, 2020
 rlist <- list.files(pattern="20200707")
 rlist
+import2 <- lapply(rlist, raster)
+July <- stack(import2)
+plot(July)
 
-import <- lapply(rlist, raster)
-July <- stack(import)
-cl <- colorRampPalette(c('red','orange','yellow'))(100) 
-plot(July, col=cl)
+rlist <- list.files(pattern="20200707")
+rlist
+import6 <- lapply(rlist, raster)
+July <- stack(import6)
+plot(July)
+
 
 # january and march
 par(mfrow=c(1,2))
@@ -1306,7 +1302,7 @@ box(col = "white")
 
 plotRGB(June,3,2,1,scale= "20000", stretch = "lin", axes =TRUE, main = "22.06.2020")
 box(col = "white")
-plotRGB(July,3,2,1,scale= "20000", stretch = "lin", axes =TRUE, main = "09.07.2020")
+plotRGB(July,3,2,1,scale= "20000", stretch = "lin", axes =TRUE, main = "07.07.2020")
 box(col = "white")
 
 
@@ -1316,7 +1312,7 @@ plotRGB(May, 4,3,2, scale= "20000", stretch = "lin", axes = TRUE, main = "23.05.
 box(col = "white")
 plotRGB(June, 4,3,2, scale= "20000", stretch = "lin", axes =TRUE, main = "22.06.2020")
 box(col = "white")
-plotRGB(July, 4,3,2, scale= "20000", stretch = "lin", axes =TRUE, main = "09.07.2020")
+plotRGB(July, 4,3,2, scale= "20000", stretch = "lin", axes =TRUE, main = "07.07.2020")
 box(col = "white")
 
 # NDVI calculation: NIR - RED / NIR + RED
@@ -1336,29 +1332,39 @@ clNDVI = colorRampPalette(c("black","blue","yellow"))(200)
 par(mfrow=c(1,3))
 plot(ndviMay, col = clNDVI, main = "23.05.2020")
 plot(ndviJune, col = clNDVI, main = "22.06.2020")
-plot(ndviJuly, col = clNDVI, main = "09.07.2020")
+plot(ndviJuly, col = clNDVI, main = "07.07.2020")
 clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
-darkblue','yellow','red','black
 
 # Difference NDVI between June and July
 diffNDVI <- ndviJuly - ndviMay
 plot(difNDVI, col=clNDVI, main = "Difference NDVI")
 
 # Zoom on Parco dell'Uccellina
-plotRGB(July, r=3, g=2, b=1, stretch="lin")
-cl=colorRampPalette(c("Brown","yellow","darkgreen"))(200)
-plot(July, col=cl)
-ext <- c(4700000, 4740000, 650000, 700000)
-zoom(July, ext=ext)
+
+May2020 <- stack(import)
+ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
+Parcomay <- crop(May2020, ext)
+plotRGB(Parcomay, r=3, g=2, b=1, stretch="lin")
+
+June2020 <- stack(import1)
+ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
+Parcojune <- crop(June2020, ext)
+plotRGB(Parcojune, r=3, g=2, b=1, stretch="lin")
+
+July2020 <- stack(import6)
+ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
+Parcojuly <- crop(July2020, ext)
+plotRGB(Parcojuly, r=3, g=2, b=1, stretch="lin")
+
+par(mfrow=c(1,3))
+plotRGB(Parcomay, r=3, g=2, b=1, stretch="lin")
+plotRGB(Parcojune, r=3, g=2, b=1, stretch="lin")
+plotRGB(Parcojuly, r=3, g=2, b=1, stretch="lin")
 
 
-
-ext <- c(4700000, 4740000, 650000, 680000)
-zoom(July, ext=ext)
-
-ext <- c(470, 474, 65, 68)
-# zoom the image
-
-cl <- colorRampPalette(c('darkblue','blue','light blue'))(100)
+# NDVI on Parco dell'Uccellina
+ndvi_park_may <- (Parcomay$T32TPN_20200523T100559_B08 - Parcomay$T32TPN_20200523T100559_B04) / (Parcomay$T32TPN_20200523T100559_B08 + Parcomay$T32TPN_20200523T100559_B04)
+ndvi_park_june <- (Parcojune$T32TPN_20200622T100559_B8A_20m - Parcojune$T32TPN_20200622T100559_B04_20m) / (Parcojune$T32TPN_20200622T100559_B8A_20m + Parcojune$T32TPN_20200622T100559_B04_20m)
+ndvi_park_july <- (Parcojuly$T32TPN_20200707T101031_B8A_20m - Parcojuly$T32TPN_20200707T101031_B04_20m) / (Parcojuly$T32TPN_20200707T101031_B8A_20m + Parcojuly$T32TPN_20200707T101031_B04_20m)
             
             
