@@ -1311,30 +1311,32 @@ box(col = "white")
 plotRGB(July, 4,3,2, scale= "20000", stretch = "lin", axes =TRUE, main = "07.07.2020")
 box(col = "white")
 
-# DVI calculation: NIR - RED
+# NDVI calculation: NIR - RED / NIR + RED
 
 # Names: to see the order of the bands
 names(May)
 names(June)
 names(July)
 
-# DVI
-dviMay <- (May$T32TPN_20200523T100559_B08 - May$T32TPN_20200523T100559_B04) 
-dviJune <- (June$T32TPN_20200622T100559_B8A_20m - June$T32TPN_20200622T100559_B04_20m) 
-dviJuly <- (July$T32TPN_20200707T101031_B8A_20m - July$T32TPN_20200707T101031_B04_20m) 
+# Maremma NDVI 
+ndviMay <- (May$T32TPN_20200523T100559_B08 - May$T32TPN_20200523T100559_B04) 
+/ (May$T32TPN_20200523T100559_B08 + May$T32TPN_20200523T100559_B04)
+ndviJune <- (June$T32TPN_20200622T100559_B8A_20m - June$T32TPN_20200622T100559_B04_20m) 
+/ (June$T32TPN_20200622T100559_B8A_20m + June$T32TPN_20200622T100559_B04_20m)
+ndviJuly <- (July$T32TPN_20200707T101031_B8A_20m - July$T32TPN_20200707T101031_B04_20m) 
+/ (July$T32TPN_20200707T101031_B8A_20m + July$T32TPN_20200707T101031_B04_20m)
 
-# plot DVI
-clDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
+# Plot NDVI
+clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
 par(mfrow=c(1,3))
-plot(dviMay, col = clNDVI, main = "23.05.2020")
-plot(dviJune, col = clNDVI, main = "22.06.2020")
-plot(dviJuly, col = clNDVI, main = "07.07.2020")
+plot(ndviMay, col = clNDVI, main = "23.05.2020")
+plot(ndviJune, col = clNDVI, main = "22.06.2020")
+plot(ndviJuly, col = clNDVI, main = "07.07.2020")
 
-# Difference between July and June DVI. 
+# Difference between July and June NDVI. 
 # It was not possible with May because of the difference in resolution
-difDVI <- dviJuly - dviMay
-cld <- colorRampPalette(c('blue','white','red'))(100) 
-plot(difDVI, col=cld, main = "Difference DVI")
+difNDVI <- ndviJuly - ndviJune 
+plot(difNDVI, col=clNDVI, main = "Difference NDVI")
 
 # Zoom on Parco dell'Uccellina
 
@@ -1342,17 +1344,14 @@ plot(difDVI, col=cld, main = "Difference DVI")
 May2020 <- stack(import)
 ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
 Parcomay <- crop(May2020, ext) # create a new image of the zoomed area
-plotRGB(Parcomay, r=3, g=2, b=1, stretch="lin")
 
 June2020 <- stack(import1)
 ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
 Parcojune <- crop(June2020, ext)
-plotRGB(Parcojune, r=3, g=2, b=1, stretch="lin")
 
 July2020 <- stack(import2)
 ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
 Parcojuly <- crop(July2020, ext)
-plotRGB(Parcojuly, r=3, g=2, b=1, stretch="lin")
 
 # Plot Uccellina Park in the visible
 par(mfrow=c(1,3))
@@ -1360,22 +1359,22 @@ plotRGB(Parcomay, r=3, g=2, b=1, stretch="lin")
 plotRGB(Parcojune, r=3, g=2, b=1, stretch="lin")
 plotRGB(Parcojuly, r=3, g=2, b=1, stretch="lin")
 
-# DVI
-dvi_park_may <- (Parcomay$T32TPN_20200523T100559_B08 - Parcomay$T32TPN_20200523T100559_B04) 
-dvi_park_june <- (Parcojune$T32TPN_20200622T100559_B8A_20m - Parcojune$T32TPN_20200622T100559_B04_20m) 
-dvi_park_july <- (Parcojuly$T32TPN_20200707T101031_B8A_20m - Parcojuly$T32TPN_20200707T101031_B04_20m) 
+# NDVI on Parco dell'Uccellina
+ndvi_park_may <- (Parcomay$T32TPN_20200523T100559_B08 - Parcomay$T32TPN_20200523T100559_B04) / (Parcomay$T32TPN_20200523T100559_B08 + Parcomay$T32TPN_20200523T100559_B04)
+ndvi_park_june <- (Parcojune$T32TPN_20200622T100559_B8A_20m - Parcojune$T32TPN_20200622T100559_B04_20m) / (Parcojune$T32TPN_20200622T100559_B8A_20m + Parcojune$T32TPN_20200622T100559_B04_20m)
+ndvi_park_july <- (Parcojuly$T32TPN_20200707T101031_B8A_20m - Parcojuly$T32TPN_20200707T101031_B04_20m) / (Parcojuly$T32TPN_20200707T101031_B8A_20m + Parcojuly$T32TPN_20200707T101031_B04_20m)
 
-# plot DVI
-clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
+# plot NDVI
+clNDVI <- colorRampPalette(c('blue','white','red'))(100)
 par(mfrow=c(1,3))
-plot(dvi_park_may, col = clNDVI, main = "23.05.2020")
-plot(dvi_park_june, col = clNDVI, main = "22.06.2020")
-plot(dvi_park_july, col = clNDVI, main = "07.07.2020")
+plot(ndvi_park_may, col = clNDVI, main = "23.05.2020")
+plot(ndvi_park_june, col = clNDVI, main = "22.06.2020")
+plot(ndvi_park_july, col = clNDVI, main = "07.07.2020")
 
 # difference DVI
-difDVI_park <- dvi_park_july - ndvi_park_june
-cld <- colorRampPalette(c('blue','white','red'))(100) 
-plot(difDVI_park, col=cld, main = "Difference DVI")
+difNDVI_park <- ndvi_park_july - ndvi_park_june
+cld <- colorRampPalette(c('blue','red','white'))(200) 
+plot(difNDVI_park, col=cld, main = "Difference NDVI")
 
 # quantitative estimate
 boxplot(difDVI_park)
