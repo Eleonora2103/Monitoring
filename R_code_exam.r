@@ -60,6 +60,7 @@ install.packages("sp")
 install.packages("GGally")
 # GGally is an extension of ggplot2; it adds functions to reduce the complexity of combining geometric objects with transformed data
 
+# attach an add-on package
 library(sp)
 library(GGally)
 
@@ -1238,9 +1239,6 @@ plot(s1, col=cl)
 # Maremma Region
 # Vegetation analysis on the Maremma region and a zoom on Uccellina Park
 
-library(raster) 
-setwd("C:/lab/maremma/")
-
 # Sentinel-2 bands
 # b1 = Coastal Aerosol
 # B2 = blue
@@ -1254,10 +1252,12 @@ setwd("C:/lab/maremma/")
 # B10 = SWIR-Cirrus
 # B11 = SWIR
 # B12 = SWIR
-# Images from May, 2020
+
+library(raster) 
+setwd("C:/lab/maremma/")
 
 # import the files through the lapply function
-
+# Images from May, 2020
 rlist <- list.files(pattern="20200523")
 rlist
 import <- lapply(rlist, raster)
@@ -1282,13 +1282,18 @@ plot(July)
 
 # Plot in the visible
 # May
-plotRGB(May, r=3, g=2, b=1, stretch="lin") 
+
+plotRGB(bind, r=3, g=2, b=1, stretch="lin") 
 
 # June
 plotRGB(June, r=3, g=2, b=1, stretch="lin")
 
 # July
 plotRGB(July, r=3, g=2, b=1, stretch="lin")
+
+# Remove the water-based colours
+bind <- reclassify(May, cbind(253:255, NA))
+# It did not work because of the noise of the clouds!!
 
 par(mfrow=c(1,3))
 # adjust the parameters so the axes colors are white
@@ -1325,23 +1330,13 @@ ndviJune <- (June$T32TPN_20200622T100559_B8A_20m - June$T32TPN_20200622T100559_B
 / (June$T32TPN_20200622T100559_B8A_20m + June$T32TPN_20200622T100559_B04_20m)
 ndviJuly <- (July$T32TPN_20200707T101031_B8A_20m - July$T32TPN_20200707T101031_B04_20m) 
 / (July$T32TPN_20200707T101031_B8A_20m + July$T32TPN_20200707T101031_B04_20m)
-
+bind <- reclassify(ndviMay, cbind(253:255, NA))
 # Plot NDVI
 clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(100)
 par(mfrow=c(1,3))
 plot(ndviMay, col = clNDVI, main = "23.05.2020")
 plot(ndviJune, col = clNDVI, main = "22.06.2020")
 plot(ndviJuly, col = clNDVI, main = "07.07.2020")
-
-# Difference between July and June NDVI. 
-# It was not possible with May because of the difference in resolution
-difNDVI <- ndviJuly - ndviJune 
-plot(difNDVI, col=clNDVI, main = "Difference NDVI")
-
-# It was not possible with May because of the difference in resolution
-# Error in compareRaster(e1, e2, extent = FALSE, rowcol = FALSE, crs = TRUE,  : 
-# different resolution
-difNDVI <- ndviJuly - ndviMay
 
 # Zoom Parco dell'Uccellina
 
@@ -1379,11 +1374,18 @@ plot(ndvi_park_may, col = clNDVI, main = "23.05.2020")
 plot(ndvi_park_june, col = clNDVI, main = "22.06.2020")
 plot(ndvi_park_july, col = clNDVI, main = "07.07.2020")
 
+# Difference between July and June NDVI
 # difference NDVI
 difNDVI_park <- ndvi_park_july - ndvi_park_june
 clNDVI <- colorRampPalette(c("darkblue","yellow","red","black"))(200)
 plot(difNDVI_park, col=clNDVI, main = "Difference NDVI")
 
+# It was not possible with May because of the difference in resolution
+# Error in compareRaster(e1, e2, extent = FALSE, rowcol = FALSE, crs = TRUE,  : 
+# different resolution
+plot(difNDVI, col=clNDVI, main = "Difference NDVI")
+
+# Quantitative estimation
 # plot!
 plot(ndvi_park_june, ndvi_park_july)
 abline(0,1, col="red") # y=a+bx
