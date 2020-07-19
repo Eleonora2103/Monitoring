@@ -1336,54 +1336,14 @@ difDVI <- dviJuly - dviMay
 cld <- colorRampPalette(c('blue','white','red'))(100) 
 plot(difDVI, col=cld, main = "Difference DVI")
 
-# NDVI
-ndviMay <- (May$T32TPN_20200523T100559_B08 - May$T32TPN_20200523T100559_B04) / (May$T32TPN_20200523T100559_B08 + May$T32TPN_20200523T100559_B04)
-ndviJune <- (June$T32TPN_20200622T100559_B8A_20m - June$T32TPN_20200622T100559_B04_20m) / (June$T32TPN_20200622T100559_B8A_20m + June$T32TPN_20200622T100559_B04_20m)
-ndviJuly <- (July$T32TPN_20200707T101031_B8A_20m - July$T32TPN_20200707T101031_B04_20m) / (July$T32TPN_20200707T101031_B8A_20m + July$T32TPN_20200707T101031_B04_20m)
-
-# Plot NDVI
-clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
-par(mfrow=c(1,3))
-plot(ndviMay, col = clNDVI, main = "23.05.2020")
-plot(ndviJune, col = clNDVI, main = "22.06.2020")
-plot(ndviJuly, col = clNDVI, main = "07.07.2020")
-
-# Difference NDVI between June and July
-diffNDVI <- ndviJuly - ndviJune
-plot(diffNDVI, col=clNDVI, main = "Difference NDVI")
-
 # Zoom on Parco dell'Uccellina
 
-# Posso fare dirrettamete così perchè tutte le mie bande hanno una risoluzione di 10m
-
+# I don't need a resample because the bands have the same resolution
 May2020 <- stack(import)
 ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
-Parcomay <- crop(May2020, ext)
+Parcomay <- crop(May2020, ext) # create a new image of the zoomed area
 plotRGB(Parcomay, r=3, g=2, b=1, stretch="lin")
 
-------------------------------------------------------
-
-May <- stack(import)
-ext <- c(670000, 683000, 4670000, 4705000) # set the coordinates of the Park
-argentario_may <- crop(May, ext)
-plotRGB(argentario_may, r=3, g=2, b=1, stretch="lin")
-
-July <- stack(import2)
-ext <- c(670000, 683000, 4670000, 4705000) # set the coordinates of the Park
-argentario_july <- crop(July, ext)
-plotRGB(argentario_july, r=3, g=2, b=1, stretch="lin")
-par(mfrow=c(1,2))
-plotRGB(argentario_may, r=3, g=2, b=1, stretch="lin")
-plotRGB(argentario_july, r=3, g=2, b=1, stretch="lin")
-
-#DVI
-dvi_may <- (argentario_may$T32TPN_20200523T100559_B08 - argentario_may$T32TPN_20200523T100559_B04)
-dvi_july <- (argentario_july$T32TPN_20200707T101031_B8A_20m - argentario_july$T32TPN_20200707T101031_B04_20m) 
-clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
-par(mfrow=c(1,2))
-plot(dvi_may, col = clNDVI, main = "23.05.2020")
-plot(dvi_july, col = clNDVI, main = "07.07.2020")
---------------------------------------------
 June2020 <- stack(import1)
 ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
 Parcojune <- crop(June2020, ext)
@@ -1394,23 +1354,11 @@ ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
 Parcojuly <- crop(July2020, ext)
 plotRGB(Parcojuly, r=3, g=2, b=1, stretch="lin")
 
+# Plot Uccellina Park in the visible
 par(mfrow=c(1,3))
 plotRGB(Parcomay, r=3, g=2, b=1, stretch="lin")
 plotRGB(Parcojune, r=3, g=2, b=1, stretch="lin")
 plotRGB(Parcojuly, r=3, g=2, b=1, stretch="lin")
-
-
-# NDVI on Parco dell'Uccellina
-ndvi_park_may <- (Parcomay$T32TPN_20200523T100559_B08 - Parcomay$T32TPN_20200523T100559_B04) / (Parcomay$T32TPN_20200523T100559_B08 + Parcomay$T32TPN_20200523T100559_B04)
-ndvi_park_june <- (Parcojune$T32TPN_20200622T100559_B8A_20m - Parcojune$T32TPN_20200622T100559_B04_20m) / (Parcojune$T32TPN_20200622T100559_B8A_20m + Parcojune$T32TPN_20200622T100559_B04_20m)
-ndvi_park_july <- (Parcojuly$T32TPN_20200707T101031_B8A_20m - Parcojuly$T32TPN_20200707T101031_B04_20m) / (Parcojuly$T32TPN_20200707T101031_B8A_20m + Parcojuly$T32TPN_20200707T101031_B04_20m)
-
-# plot NDVI
-clDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
-par(mfrow=c(1,3))
-plot(ndvi_park_may, col = clNDVI, main = "23.05.2020")
-plot(ndvi_park_june, col = clNDVI, main = "22.06.2020")
-plot(ndvi_park_july, col = clNDVI, main = "07.07.2020")
 
 # DVI
 dvi_park_may <- (Parcomay$T32TPN_20200523T100559_B08 - Parcomay$T32TPN_20200523T100559_B04) 
@@ -1437,27 +1385,3 @@ boxplot(difDVI_park, outline=F, horizontal=T, axes=T)
 # plot!
 plot(dvi_park_july, dvi_park_june)
 abline(0,1,col="red") # y=a+bx
-
-
-
-
-
-setwd("C:/lab/May8/")
-band8 <- stack(import)
-rlist <- list.files(pattern="20200622")
-rlist
-import <- lapply(rlist, raster)
-T32TPN_20200523T100559_B08 <- resample(T32TPN_20200523T100559_B08,T32TPN_20200523T100559_B8A)
-
-band8 <- brick("T32TPN_20200523T100559_B08")
-band8A <- raster("T32TPN_20200523T100559_B8A")
-
-
-setwd("C:/lab/June60/")
-
-# Images from June, 2020, resolution = 60m
-rlist <- list.files(pattern="20200622")
-rlist
-import <- lapply(rlist, raster)
-june60 <- stack(import)
-plotRGB(june60, r=1, g=3, b=2, stretch="lin") 
