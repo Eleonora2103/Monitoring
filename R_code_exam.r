@@ -1327,7 +1327,7 @@ ndviJuly <- (July$T32TPN_20200707T101031_B8A_20m - July$T32TPN_20200707T101031_B
 / (July$T32TPN_20200707T101031_B8A_20m + July$T32TPN_20200707T101031_B04_20m)
 
 # Plot NDVI
-clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
+clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(100)
 par(mfrow=c(1,3))
 plot(ndviMay, col = clNDVI, main = "23.05.2020")
 plot(ndviJune, col = clNDVI, main = "22.06.2020")
@@ -1338,7 +1338,12 @@ plot(ndviJuly, col = clNDVI, main = "07.07.2020")
 difNDVI <- ndviJuly - ndviJune 
 plot(difNDVI, col=clNDVI, main = "Difference NDVI")
 
-# Zoom on Parco dell'Uccellina
+# It was not possible with May because of the difference in resolution
+# Error in compareRaster(e1, e2, extent = FALSE, rowcol = FALSE, crs = TRUE,  : 
+# different resolution
+difNDVI <- ndviJuly - ndviMay
+
+# Zoom Parco dell'Uccellina
 
 # I don't need a resample because the bands have the same resolution
 May2020 <- stack(import)
@@ -1355,14 +1360,17 @@ Parcojuly <- crop(July2020, ext)
 
 # Plot Uccellina Park in the visible
 par(mfrow=c(1,3))
-plotRGB(Parcomay, r=3, g=2, b=1, stretch="lin")
-plotRGB(Parcojune, r=3, g=2, b=1, stretch="lin")
-plotRGB(Parcojuly, r=3, g=2, b=1, stretch="lin")
+plotRGB(Parcomay, r=3, g=2, b=1, stretch="lin", axes =TRUE, main = "23.05.2020")
+plotRGB(Parcojune, r=3, g=2, b=1, stretch="lin", axes =TRUE, main = "22.06.2020")
+plotRGB(Parcojuly, r=3, g=2, b=1, stretch="lin", axes =TRUE, main = "07.07.2020")
 
 # NDVI on Parco dell'Uccellina
-ndvi_park_may <- (Parcomay$T32TPN_20200523T100559_B08 - Parcomay$T32TPN_20200523T100559_B04) / (Parcomay$T32TPN_20200523T100559_B08 + Parcomay$T32TPN_20200523T100559_B04)
-ndvi_park_june <- (Parcojune$T32TPN_20200622T100559_B8A_20m - Parcojune$T32TPN_20200622T100559_B04_20m) / (Parcojune$T32TPN_20200622T100559_B8A_20m + Parcojune$T32TPN_20200622T100559_B04_20m)
-ndvi_park_july <- (Parcojuly$T32TPN_20200707T101031_B8A_20m - Parcojuly$T32TPN_20200707T101031_B04_20m) / (Parcojuly$T32TPN_20200707T101031_B8A_20m + Parcojuly$T32TPN_20200707T101031_B04_20m)
+ndvi_park_may <- (Parcomay$T32TPN_20200523T100559_B08 - Parcomay$T32TPN_20200523T100559_B04) 
+/ (Parcomay$T32TPN_20200523T100559_B08 + Parcomay$T32TPN_20200523T100559_B04)
+ndvi_park_june <- (Parcojune$T32TPN_20200622T100559_B8A_20m - Parcojune$T32TPN_20200622T100559_B04_20m) 
+/ (Parcojune$T32TPN_20200622T100559_B8A_20m + Parcojune$T32TPN_20200622T100559_B04_20m)
+ndvi_park_july <- (Parcojuly$T32TPN_20200707T101031_B8A_20m - Parcojuly$T32TPN_20200707T101031_B04_20m) 
+/ (Parcojuly$T32TPN_20200707T101031_B8A_20m + Parcojuly$T32TPN_20200707T101031_B04_20m)
 
 # plot NDVI
 clNDVI <- colorRampPalette(c('blue','white','red'))(100)
@@ -1371,16 +1379,16 @@ plot(ndvi_park_may, col = clNDVI, main = "23.05.2020")
 plot(ndvi_park_june, col = clNDVI, main = "22.06.2020")
 plot(ndvi_park_july, col = clNDVI, main = "07.07.2020")
 
-# difference DVI
+# difference NDVI
 difNDVI_park <- ndvi_park_july - ndvi_park_june
-cld <- colorRampPalette(c('blue','red','white'))(200) 
-plot(difNDVI_park, col=cld, main = "Difference NDVI")
+clNDVI <- colorRampPalette(c("darkblue","yellow","red","black"))(200)
+plot(difNDVI_park, col=clNDVI, main = "Difference NDVI")
 
 # quantitative estimate
-boxplot(difDVI_park)
-boxplot(difDVI_park, outline=F, horizontal=T) # remove the outline; move the box-plot horizontally
-boxplot(difDVI_park, outline=F, horizontal=T, axes=T) 
+boxplot(difNDVI_park)
+boxplot(difNDVI_park, outline=F, horizontal=T) # remove the outline; move the box-plot horizontally
+boxplot(difNDVI_park, outline=F, horizontal=T, axes=T) 
 
 # plot!
-plot(dvi_park_july, dvi_park_june)
+plot(ndvi_park_july, ndvi_park_june)
 abline(0,1,col="red") # y=a+bx
