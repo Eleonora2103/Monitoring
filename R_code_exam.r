@@ -1235,33 +1235,11 @@ plot(s1, col=cl)
 
 # R_code_final_project.r
 
-# Maremma
+# Maremma Region
+# Vegetation analysis on the Maremma region and a zoom on Uccellina Park
 
-library(raster)
+library(raster) 
 setwd("C:/lab/maremma/")
-
-# import the files through the lapply function
-
-# Images from May, 2020
-rlist <- list.files(pattern="20200523")
-rlist
-import <- lapply(rlist, raster)
-May <- stack(import)
-plot(May)
-
-# Images from June, 2020
-rlist <- list.files(pattern="20200622")
-rlist
-import1 <- lapply(rlist, raster)
-June <- stack(import1)
-plot(June)
-
-# Image from July, 2020
-rlist <- list.files(pattern="20200707")
-rlist
-import2 <- lapply(rlist, raster)
-July <- stack(import2)
-plot(July)
 
 # Sentinel-2 bands
 # b1 = Coastal Aerosol
@@ -1276,6 +1254,29 @@ plot(July)
 # B10 = SWIR-Cirrus
 # B11 = SWIR
 # B12 = SWIR
+# Images from May, 2020
+
+# import the files through the lapply function
+
+rlist <- list.files(pattern="20200523")
+rlist
+import <- lapply(rlist, raster)
+May <- stack(import)
+plot(May) # plot the four bands that I picked
+
+# Images from June, 2020
+rlist <- list.files(pattern="20200622")
+rlist
+import1 <- lapply(rlist, raster)
+June <- stack(import1)
+plot(June)
+
+# Image from July, 2020
+rlist <- list.files(pattern="20200707")
+rlist
+import2 <- lapply(rlist, raster)
+July <- stack(import2)
+plot(July)
 
 # RGB space
 
@@ -1294,7 +1295,7 @@ par(mfrow=c(1,3))
 par(col.axis = "white", col.lab = "white")
 # plot
 plotRGB(May,3,2,1,scale= "20000", stretch = "lin", axes = TRUE, main = "23.05.2020")
-# set bounding box to white as well
+# set bounding box to white as well; add the axes and the title
 box(col = "white")
 plotRGB(June,3,2,1,scale= "20000", stretch = "lin", axes =TRUE, main = "22.06.2020")
 box(col = "white")
@@ -1310,9 +1311,9 @@ box(col = "white")
 plotRGB(July, 4,3,2, scale= "20000", stretch = "lin", axes =TRUE, main = "07.07.2020")
 box(col = "white")
 
-# NDVI calculation: NIR - RED / NIR + RED
+# DVI calculation: NIR - RED
 
-# Names of the bands
+# Names: to see the order of the bands
 names(May)
 names(June)
 names(July)
@@ -1329,13 +1330,11 @@ plot(dviMay, col = clNDVI, main = "23.05.2020")
 plot(dviJune, col = clNDVI, main = "22.06.2020")
 plot(dviJuly, col = clNDVI, main = "07.07.2020")
 
-difDVI <- dviJuly - dviJune
+# Difference between July and June DVI. 
+# It was not possible with May because of the difference in resolution
+difDVI <- dviJuly - dviMay
 cld <- colorRampPalette(c('blue','white','red'))(100) 
 plot(difDVI, col=cld, main = "Difference DVI")
-
-mshp <- spTransform(M_shp, proj4string(s04c.bands)) 
-
-difDVI_msk <- mask(crop(s04c.bands, extent(mshp)), mshp)
 
 # NDVI
 ndviMay <- (May$T32TPN_20200523T100559_B08 - May$T32TPN_20200523T100559_B04) / (May$T32TPN_20200523T100559_B08 + May$T32TPN_20200523T100559_B04)
@@ -1362,6 +1361,29 @@ ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
 Parcomay <- crop(May2020, ext)
 plotRGB(Parcomay, r=3, g=2, b=1, stretch="lin")
 
+------------------------------------------------------
+
+May <- stack(import)
+ext <- c(670000, 683000, 4670000, 4705000) # set the coordinates of the Park
+argentario_may <- crop(May, ext)
+plotRGB(argentario_may, r=3, g=2, b=1, stretch="lin")
+
+July <- stack(import2)
+ext <- c(670000, 683000, 4670000, 4705000) # set the coordinates of the Park
+argentario_july <- crop(July, ext)
+plotRGB(argentario_july, r=3, g=2, b=1, stretch="lin")
+par(mfrow=c(1,2))
+plotRGB(argentario_may, r=3, g=2, b=1, stretch="lin")
+plotRGB(argentario_july, r=3, g=2, b=1, stretch="lin")
+
+#DVI
+dvi_may <- (argentario_may$T32TPN_20200523T100559_B08 - argentario_may$T32TPN_20200523T100559_B04)
+dvi_july <- (argentario_july$T32TPN_20200707T101031_B8A_20m - argentario_july$T32TPN_20200707T101031_B04_20m) 
+clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
+par(mfrow=c(1,2))
+plot(dvi_may, col = clNDVI, main = "23.05.2020")
+plot(dvi_july, col = clNDVI, main = "07.07.2020")
+--------------------------------------------
 June2020 <- stack(import1)
 ext <- c(662000, 680000, 4710000, 4730000) # set the coordinates of the Park
 Parcojune <- crop(June2020, ext)
@@ -1384,7 +1406,7 @@ ndvi_park_june <- (Parcojune$T32TPN_20200622T100559_B8A_20m - Parcojune$T32TPN_2
 ndvi_park_july <- (Parcojuly$T32TPN_20200707T101031_B8A_20m - Parcojuly$T32TPN_20200707T101031_B04_20m) / (Parcojuly$T32TPN_20200707T101031_B8A_20m + Parcojuly$T32TPN_20200707T101031_B04_20m)
 
 # plot NDVI
-clNDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
+clDVI = colorRampPalette(c("darkblue","yellow","red","black"))(200)
 par(mfrow=c(1,3))
 plot(ndvi_park_may, col = clNDVI, main = "23.05.2020")
 plot(ndvi_park_june, col = clNDVI, main = "22.06.2020")
