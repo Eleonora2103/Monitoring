@@ -1384,11 +1384,6 @@ difNDVI_park <- ndvi_park_july - ndvi_park_june
 clNDVI <- colorRampPalette(c("darkblue","yellow","red","black"))(200)
 plot(difNDVI_park, col=clNDVI, main = "Difference NDVI")
 
-# quantitative estimate
-boxplot(difNDVI_park)
-boxplot(difNDVI_park, outline=F, horizontal=T) # remove the outline; move the box-plot horizontally
-boxplot(difNDVI_park, outline=F, horizontal=T, axes=T) 
-
 # plot!
-plot(ndvi_park_july, ndvi_park_june)
-abline(0,1,col="red") # y=a+bx
+plot(ndvi_park_june, ndvi_park_july)
+abline(0,1, col="red") # y=a+bx
