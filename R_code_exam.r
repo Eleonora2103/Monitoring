@@ -9,12 +9,13 @@
 # 7. R code_ecosystem functions
 # 8. R code_pca_remote_sensing
 # 9. R code_faPAR
-# 10. R code_radiance
-# 11. R code_EBV
-# 12. Rcode_snow
-# 13. R code_no2
-# 14. R code_interpolation
-# 15. R code_sdm
+# 10. R cod radiance
+# 11. R code EBV
+# 12. R code snow
+# 13. R code no2
+# 14. R code interpolation
+# 15. R code sdm
+# 16. R code final project
 
 # 1. R_code_first
 
